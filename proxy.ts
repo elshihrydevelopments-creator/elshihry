@@ -1,14 +1,25 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { getLocaleFromPathname } from '@/lib/i18n'
+import { defaultLocale, getLocaleFromPathname, isLocale, withLocale } from '@/lib/i18n'
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  const { pathname } = request.nextUrl
+  const firstSegment = pathname.split('/').filter(Boolean)[0]
+
+  if (pathname.startsWith('/admin')) {
     return await updateSession(request)
   }
 
+  // Redirect any public route without an explicit locale prefix to the default locale.
+  if (!firstSegment || !isLocale(firstSegment)) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = withLocale(defaultLocale, pathname)
+
+    return NextResponse.redirect(redirectUrl)
+  }
+
   const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-site-locale', getLocaleFromPathname(request.nextUrl.pathname))
+  requestHeaders.set('x-site-locale', getLocaleFromPathname(pathname))
 
   return NextResponse.next({
     request: {

@@ -24,8 +24,18 @@ export default function AboutPageEditor() {
           <SectionEditor
             sectionKey="about"
             label="قسم من نحن — About"
-            description="الرؤية المؤسسية، الفقرات، الإنجازات التاريخية، القيادة، والقيم الجوهرية"
+            description="الرؤية المؤسسية، الفقرات، والإنجازات التاريخية"
             defaultOpen={true}
+          />
+          <SectionEditor
+            sectionKey="aboutLeadership"
+            label="قسم القيادة"
+            description="الاسم، المنصب، الاقتباس، وصورة سيكشن القيادة"
+          />
+          <SectionEditor
+            sectionKey="aboutValues"
+            label="قسم قيمنا الجوهرية"
+            description="عنوان السيكشن وبطاقات القيم الجوهرية"
           />
         </div>
       </motion.div>

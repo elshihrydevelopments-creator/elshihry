@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: 'ar' | 'en' }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const content = await getRouteContent(['about', 'philosophy']);
+  const content = await getRouteContent(['about', 'aboutLeadership', 'aboutValues', 'philosophy']);
   const about = content[locale]?.about;
 
   return buildLocalizedMetadata({
@@ -29,7 +29,7 @@ export default async function LocalizedAboutPage({
   params: Promise<{ locale: 'ar' | 'en' }>;
 }) {
   const { locale } = await params;
-  const content = await getRouteContent(['about', 'philosophy']);
+  const content = await getRouteContent(['about', 'aboutLeadership', 'aboutValues', 'philosophy']);
   const about = content[locale]?.about;
   const description = about?.paragraphs?.[0] || 'About El Shihry Developments.';
   const title = locale === 'ar' ? 'من نحن | الشهري للتطوير العقاري' : 'About | El Shihry Developments';

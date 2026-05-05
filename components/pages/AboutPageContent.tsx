@@ -12,6 +12,10 @@ import { cn } from '@/lib/utils';
 export function AboutPageContent() {
   const { copy, locale } = useLanguage();
   const isArabic = locale === 'ar';
+  const leadershipImageUrl = copy.aboutLeadership.imageUrl.trim();
+  const leadershipImageSrc = leadershipImageUrl || siteImages.lifestyle[3];
+  const leadershipImageKey =
+    typeof leadershipImageSrc === 'string' ? leadershipImageSrc : leadershipImageSrc.src;
 
   return (
     <div className="pt-32 pb-20 overflow-x-hidden">
@@ -103,12 +107,12 @@ export function AboutPageContent() {
       <section className="mx-auto mb-40 max-w-7xl px-6 md:px-12">
         <div className="mb-20 text-center">
           <h2 className="mb-6 text-3xl font-bold text-white md:text-5xl uppercase tracking-widest">
-            {isArabic ? 'قيمنا الجوهرية' : 'Core Values'}
+            {copy.aboutValues.title}
           </h2>
           <div className="mx-auto h-1 w-20 rounded-full bg-gold" />
         </div>
         <div className="grid gap-12 md:grid-cols-3">
-          {copy.about.values.map((value, index) => (
+          {copy.aboutValues.items.map((value, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
@@ -220,24 +224,26 @@ export function AboutPageContent() {
             className="relative aspect-3/4 overflow-hidden rounded-[3rem] grayscale transition-all duration-1000 hover:grayscale-0 md:aspect-square"
           >
             <Image
-              src={siteImages.lifestyle[3]}
-              alt="Leadership"
+              key={leadershipImageKey}
+              src={leadershipImageSrc}
+              alt={copy.aboutLeadership.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
+              unoptimized={typeof leadershipImageSrc === 'string'}
             />
           </motion.div>
           <div className={cn('space-y-8', isArabic ? 'text-right' : 'text-left')}>
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-white md:text-5xl">
-                {copy.about.leadership[0].name}
+                {copy.aboutLeadership.name}
               </h3>
               <p className="text-gold text-sm font-bold tracking-[0.3em] uppercase">
-                {copy.about.leadership[0].position}
+                {copy.aboutLeadership.position}
               </p>
             </div>
             <p className="text-2xl md:text-3xl font-light italic leading-snug text-white/80">
-              &ldquo;{copy.about.leadership[0].quote}&rdquo;
+              &ldquo;{copy.aboutLeadership.quote}&rdquo;
             </p>
             <div className="h-px w-20 bg-gold/50" />
           </div>

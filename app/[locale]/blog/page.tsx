@@ -19,7 +19,7 @@ export async function generateMetadata({
     description: blog?.description || 'El Shihry blog and market updates.',
     locale,
     path: '/blog',
-    title: locale === 'ar' ? 'المدونة | الشهري للتطوير العقاري' : 'Blog | El Shihry Developments',
+    title: locale === 'ar' ? 'المدونة | الشحري للتطوير العقاري' : 'Blog | El Shihry Developments',
   });
 }
 
@@ -32,7 +32,7 @@ export default async function LocalizedBlogPage({
   const content = await getRouteContent(['blog']);
   const blog = content[locale]?.blog;
   const description = blog?.description || 'El Shihry blog and market updates.';
-  const title = locale === 'ar' ? 'المدونة | الشهري للتطوير العقاري' : 'Blog | El Shihry Developments';
+  const title = locale === 'ar' ? 'المدونة | الشحري للتطوير العقاري' : 'Blog | El Shihry Developments';
 
   return (
     <RouteContentProvider dynamicContent={content} locale={locale}>

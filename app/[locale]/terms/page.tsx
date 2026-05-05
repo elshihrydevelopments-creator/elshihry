@@ -13,11 +13,11 @@ export async function generateMetadata({
   return buildLocalizedMetadata({
     description:
       locale === 'ar'
-        ? 'الشروط والأحكام الخاصة باستخدام موقع الشهري للتطوير العقاري.'
+        ? 'الشروط والأحكام الخاصة باستخدام موقع الشحري للتطوير العقاري.'
         : 'Terms of use for El Shihry Developments.',
     locale,
     path: '/terms',
-    title: locale === 'ar' ? 'الشروط والأحكام | الشهري للتطوير العقاري' : 'Terms of Use | El Shihry Developments',
+    title: locale === 'ar' ? 'الشروط والأحكام | الشحري للتطوير العقاري' : 'Terms of Use | El Shihry Developments',
   });
 }
 

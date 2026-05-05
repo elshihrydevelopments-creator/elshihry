@@ -19,7 +19,7 @@ export async function generateMetadata({
     description: projects?.description || 'Browse El Shihry projects.',
     locale,
     path: '/projects',
-    title: locale === 'ar' ? 'المشاريع | الشهري للتطوير العقاري' : 'Projects | El Shihry Developments',
+    title: locale === 'ar' ? 'المشاريع | الشحري للتطوير العقاري' : 'Projects | El Shihry Developments',
   });
 }
 
@@ -32,7 +32,7 @@ export default async function LocalizedProjectsPage({
   const content = await getRouteContent(['projects']);
   const projects = content[locale]?.projects;
   const description = projects?.description || 'Browse El Shihry projects.';
-  const title = locale === 'ar' ? 'المشاريع | الشهري للتطوير العقاري' : 'Projects | El Shihry Developments';
+  const title = locale === 'ar' ? 'المشاريع | الشحري للتطوير العقاري' : 'Projects | El Shihry Developments';
 
   return (
     <RouteContentProvider dynamicContent={content} locale={locale}>

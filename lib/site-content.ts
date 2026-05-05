@@ -106,8 +106,16 @@ export type SiteCopy = {
     paragraphs: string[];
     titleLines: [string, string];
     milestones: Array<{ year: string; title: string; description: string }>;
-    leadership: Array<{ name: string; position: string; quote: string }>;
-    values: Array<{ title: string; description: string }>;
+  };
+  aboutLeadership: {
+    imageUrl: string;
+    name: string;
+    position: string;
+    quote: string;
+  };
+  aboutValues: {
+    title: string;
+    items: Array<{ title: string; description: string }>;
   };
   footer: {
     contactTitle: string;
@@ -252,15 +260,21 @@ export const siteContent: Record<Locale, SiteCopy> = {
         { year: '2018', title: 'البرج الأيقوني', description: 'إطلاق أول برج سكني ذكي بتصميم معماري حاز على جوائز دولية.' },
         { year: '2024', title: 'التوسع العالمي', description: 'بدء أولى مشاريعنا خارج الحدود مع الحفاظ على بصمتنا الفريدة.' },
       ],
-      leadership: [
-        { name: 'م/ أحمد الشهري', position: 'رئيس مجلس الإدارة', quote: 'نحن لا نبني جدراناً، نحن نصيغ فضاءات تحكي قصصاً من الرقي.' },
-      ],
-      values: [
+      cta: 'قصتنا',
+    },
+    aboutLeadership: {
+      imageUrl: '',
+      name: 'م/ أحمد الشهري',
+      position: 'رئيس مجلس الإدارة',
+      quote: 'نحن لا نبني جدراناً، نحن نصيغ فضاءات تحكي قصصاً من الرقي.',
+    },
+    aboutValues: {
+      title: 'قيمنا الجوهرية',
+      items: [
         { title: 'الخلود', description: 'تصاميم لا تتأثر بمرور الزمن وتزداد قيمة مع السنوات.' },
         { title: 'الدقة', description: 'كل مليمتر في مشاريعنا مدروس بعناية فائقة لضمان الكمال.' },
         { title: 'الإرث', description: 'نبني ليبقى اسمنا مرادفاً للجودة لأجيال قادمة.' },
       ],
-      cta: 'قصتنا',
     },
     philosophy: {
       text: 'الرفاهية الحقيقية لا تُرى فقط، بل تُحَس. إنها العناية الدقيقة بالتفاصيل الخفية، وتناغم النسب الذهبية، والوعد الصامت بالخلود في كل حجر.',
@@ -458,15 +472,21 @@ export const siteContent: Record<Locale, SiteCopy> = {
         { year: '2018', title: 'The Iconic Tower', description: 'Launching our first smart residential tower with award-winning architecture.' },
         { year: '2024', title: 'Global Expansion', description: 'Starting our first international projects while maintaining our unique footprint.' },
       ],
-      leadership: [
-        { name: 'Eng. Ahmed El Shihry', position: 'Chairman', quote: 'We do not build walls; we craft spaces that tell stories of elegance.' },
-      ],
-      values: [
+      cta: 'Our Story',
+    },
+    aboutLeadership: {
+      imageUrl: '',
+      name: 'Eng. Ahmed El Shihry',
+      position: 'Chairman',
+      quote: 'We do not build walls; we craft spaces that tell stories of elegance.',
+    },
+    aboutValues: {
+      title: 'Core Values',
+      items: [
         { title: 'Timelessness', description: 'Designs that transcend trends and increase in value over time.' },
         { title: 'Precision', description: 'Every millimeter in our projects is meticulously crafted for perfection.' },
         { title: 'Legacy', description: 'Building so that our name remains synonymous with quality for generations.' },
       ],
-      cta: 'Our Story',
     },
     philosophy: {
       text: 'True luxury is not just seen, it is felt. It lives in the meticulous attention to the unseen details, the harmony of golden proportions, and the silent promise of eternity built into every stone.',

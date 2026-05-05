@@ -30,7 +30,7 @@ export async function generateMetadata({
     path: '/',
     title:
       locale === 'ar'
-        ? 'الشهري للتطوير العقاري | عقارات فاخرة في مصر'
+        ? 'الشحري للتطوير العقاري | عقارات فاخرة في مصر'
         : 'El Shihry Developments | Luxury Real Estate in Egypt',
   });
 }
@@ -47,7 +47,7 @@ export default async function LocalizedHomePage({
   const about = content[locale]?.about;
   const title =
     locale === 'ar'
-      ? 'الشهري للتطوير العقاري | عقارات فاخرة في مصر'
+      ? 'الشحري للتطوير العقاري | عقارات فاخرة في مصر'
       : 'El Shihry Developments | Luxury Real Estate in Egypt';
   const description = hero?.subtitle || about?.paragraphs?.[0] || 'Luxury real estate developments in Egypt.';
 

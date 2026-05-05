@@ -160,7 +160,7 @@ export function BlogPostPageClient({
           </h3>
           <p className="mt-3 text-white/65">
             {isArabic
-              ? 'يمكن لفريق الشهري مساعدتك في مقارنة المشروعات وخطط السداد وخيارات الاستثمار.'
+              ? 'يمكن لفريق الشحري مساعدتك في مقارنة المشروعات وخطط السداد وخيارات الاستثمار.'
               : 'The El Shihry team can help you compare projects, payment plans, and investment fit.'}
           </p>
           <Link

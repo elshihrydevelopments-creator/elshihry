@@ -13,11 +13,11 @@ export async function generateMetadata({
   return buildLocalizedMetadata({
     description:
       locale === 'ar'
-        ? 'سياسة الخصوصية الخاصة بموقع الشهري للتطوير العقاري.'
+        ? 'سياسة الخصوصية الخاصة بموقع الشحري للتطوير العقاري.'
         : 'Privacy policy for El Shihry Developments.',
     locale,
     path: '/privacy-policy',
-    title: locale === 'ar' ? 'سياسة الخصوصية | الشهري للتطوير العقاري' : 'Privacy Policy | El Shihry Developments',
+    title: locale === 'ar' ? 'سياسة الخصوصية | الشحري للتطوير العقاري' : 'Privacy Policy | El Shihry Developments',
   });
 }
 

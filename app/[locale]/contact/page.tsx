@@ -19,7 +19,7 @@ export async function generateMetadata({
     description: contact?.description || 'Contact El Shihry Developments.',
     locale,
     path: '/contact',
-    title: locale === 'ar' ? 'تواصل | الشهري للتطوير العقاري' : 'Contact | El Shihry Developments',
+    title: locale === 'ar' ? 'تواصل | الشحري للتطوير العقاري' : 'Contact | El Shihry Developments',
   });
 }
 
@@ -32,7 +32,7 @@ export default async function LocalizedContactPage({
   const content = await getRouteContent(['contactPage', 'footer']);
   const contact = content[locale]?.contactPage;
   const description = contact?.description || 'Contact El Shihry Developments.';
-  const title = locale === 'ar' ? 'تواصل | الشهري للتطوير العقاري' : 'Contact | El Shihry Developments';
+  const title = locale === 'ar' ? 'تواصل | الشحري للتطوير العقاري' : 'Contact | El Shihry Developments';
 
   return (
     <RouteContentProvider dynamicContent={content} locale={locale}>

@@ -25,9 +25,9 @@ export function WhatsAppButton() {
   const { locale } = useLanguage();
   const isArabic = locale === 'ar';
 
-  const text = isArabic 
-    ? "الشهري للتطوير العقاري • " 
-    : "EL SHIHRY DEVELOPMENTS • ";
+  const text = isArabic
+    ? 'الشحري للتطوير العقاري • '
+    : 'EL SHIHRY DEVELOPMENTS • ';
 
   const whatsappUrl = getWhatsAppUrl();
 

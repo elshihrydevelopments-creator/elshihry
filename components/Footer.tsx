@@ -241,7 +241,7 @@ export function Footer() {
         </div>
 
         <div className="hidden h-[16rem] items-center justify-center border-t border-white/8 pt-4 lg:flex">
-          <TextHoverEffect text={isArabic ? 'الشهري' : 'El Shihry'} className="h-full w-full max-w-6xl" />
+          <TextHoverEffect text={isArabic ? 'الشحري' : 'El Shihry'} className="h-full w-full max-w-6xl" />
         </div>
       </div>
     </footer>

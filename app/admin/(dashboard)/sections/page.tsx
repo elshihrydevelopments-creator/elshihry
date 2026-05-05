@@ -10,6 +10,8 @@ import { notifyContentUpdated } from '@/lib/content-sync';
 const SECTIONS = [
   { key: 'hero', name: 'الصفحة الرئيسية - الهيرو' },
   { key: 'about', name: 'من نحن - القسم التعريفي' },
+  { key: 'aboutLeadership', name: 'من نحن - القيادة' },
+  { key: 'aboutValues', name: 'من نحن - قيمنا الجوهرية' },
   { key: 'arch', name: 'النهج ومحاور التطوير' },
   { key: 'projects', name: 'المشاريع' },
   { key: 'philosophy', name: 'الفلسفة' },

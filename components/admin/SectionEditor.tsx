@@ -171,10 +171,18 @@ export function SectionEditor({ sectionKey, label, description, defaultOpen = fa
                 if (sectionKey === 'lifestyle' && key === 'images') return null;
 
                 if (typeof val === 'string') {
+                  const isImageField = key.toLowerCase().includes('image');
+
                   return (
                     <div key={key}>
                       <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-white/50">{key}</label>
-                      {val.length > 60 ? (
+                      {isImageField ? (
+                        <SmartUploader
+                          value={val ? [val] : []}
+                          onChange={(urls) => handleFieldChange(key, urls[0] || '')}
+                          label={key}
+                        />
+                      ) : val.length > 60 ? (
                         <textarea
                           rows={3}
                           value={val}
