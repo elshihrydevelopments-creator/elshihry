@@ -92,10 +92,10 @@ export function ProjectsBento() {
   );
 
   return (
-    <section id="projects" ref={container} className="mx-auto max-w-[1400px] px-6 py-32 md:px-12">
+    <section id="projects" ref={container} className="mx-auto max-w-[1400px] px-6 py-8 md:px-12 md:py-32">
       <LocaleReveal
         localeKey={`projects-heading-${locale}`}
-        className={cn('mb-20 max-w-3xl', locale === 'ar' ? 'text-right md:ml-auto' : 'text-left')}
+        className={cn('mb-10 max-w-3xl md:mb-20', locale === 'ar' ? 'text-right md:ml-auto' : 'text-left')}
       >
         <ScrollRevealHeading
           as="h2"

@@ -51,9 +51,9 @@ export function Philosophy() {
     <section
       id="vision"
       ref={sectionRef}
-      className="relative mx-auto min-h-[155vh] max-w-[1400px] px-6 md:px-12"
+      className="relative mx-auto min-h-[72vh] max-w-[1400px] px-6 md:min-h-[155vh] md:px-12"
     >
-      <div className="sticky top-0 flex min-h-screen items-center justify-center py-24">
+      <div className="flex min-h-[72vh] items-center justify-center py-8 md:sticky md:top-0 md:min-h-screen md:py-24">
         <div className="absolute inset-x-8 top-1/2 h-48 -translate-y-1/2 rounded-full bg-gold/10 blur-3xl" />
 
         <div className="relative max-w-6xl">
