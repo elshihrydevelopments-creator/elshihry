@@ -21,7 +21,7 @@ export function ProjectsPageContent() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 text-xs font-bold tracking-[0.4em] text-gold uppercase"
         >
-          {isArabic ? 'محافظتنا العقارية' : 'Our Portfolio'}
+          {isArabic ? 'مشاريعنا العقارية' : 'Our Portfolio'}
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
