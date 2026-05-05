@@ -46,6 +46,11 @@ const projectLayout = [
 export function ProjectsBento() {
   const container = useRef<HTMLDivElement>(null);
   const { copy, locale, localizeHref } = useLanguage();
+  const headingTitle = locale === 'ar' ? 'مشاريعنا' : `${copy.projects.titleFirst} ${copy.projects.titleSecond}`.trim();
+  const headingDescription =
+    locale === 'ar'
+      ? 'استكشف مجموعة من مشاريعنا التي تعكس رؤيتنا في الابتكار والجودة'
+      : copy.projects.description;
 
   useGSAP(
     () => {
@@ -96,13 +101,9 @@ export function ProjectsBento() {
           as="h2"
           localeKey={`projects-heading-title-${locale}`}
           className={cn('mb-4 text-4xl font-bold tracking-tighter md:text-6xl', locale === 'en' ? 'uppercase' : '')}
-          lines={[
-            <span key="projects-title">
-              {copy.projects.titleFirst} <span key="projects-gold" className="text-gradient-gold">{copy.projects.titleSecond}</span>
-            </span>,
-          ]}
+          lines={[headingTitle]}
         />
-        <p className="text-lg text-white/60">{copy.projects.description}</p>
+        <p className="text-lg text-white/60">{headingDescription}</p>
       </LocaleReveal>
 
       <div className="grid grid-cols-12 gap-6">
