@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useLanguage } from '@/components/LanguageProvider';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { trackEvent } from '@/lib/analytics';
 import { LocaleReveal } from '@/components/LocaleReveal';
 import { ScrollRevealHeading } from '@/components/ScrollRevealHeading';
@@ -46,6 +47,7 @@ const projectLayout = [
 export function ProjectsBento() {
   const container = useRef<HTMLDivElement>(null);
   const { copy, locale, localizeHref } = useLanguage();
+  const isMobile = useIsMobile();
   const headingTitle = locale === 'ar' ? 'مشاريعنا' : `${copy.projects.titleFirst} ${copy.projects.titleSecond}`.trim();
   const headingDescription =
     locale === 'ar'
@@ -55,6 +57,47 @@ export function ProjectsBento() {
   useGSAP(
     () => {
       const cards = gsap.utils.toArray<HTMLElement>('.bento-card');
+
+      if (!cards.length) {
+        return;
+      }
+
+      if (isMobile) {
+        gsap.fromTo(
+          cards,
+          { y: 56, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: container.current,
+              start: 'top 92%',
+              once: true,
+            },
+          }
+        );
+
+        cards.forEach((card) => {
+          const image = card.querySelector('.bento-img');
+          if (image) {
+            gsap.to(image, {
+              scale: 1.08,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true,
+              },
+            });
+          }
+        });
+
+        return;
+      }
 
       cards.forEach((card) => {
         gsap.fromTo(
@@ -88,7 +131,7 @@ export function ProjectsBento() {
         }
       });
     },
-    { dependencies: [locale], scope: container }
+    { dependencies: [locale, isMobile], scope: container, revertOnUpdate: true }
   );
 
   return (

@@ -4,6 +4,7 @@ import { motion, useMotionTemplate, useScroll, useTransform } from 'motion/react
 import { useRef } from 'react';
 
 import { useLanguage } from '@/components/LanguageProvider';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 function RevealWord({
@@ -40,20 +41,21 @@ function RevealWord({
 export function Philosophy() {
   const sectionRef = useRef<HTMLElement>(null);
   const { copy, locale } = useLanguage();
+  const isMobile = useIsMobile();
   const isArabic = locale === 'ar';
   const words = copy.philosophy.text.split(' ').filter(Boolean);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start 92%', 'end 52%'],
+    offset: isMobile ? ['start 98%', 'end 70%'] : ['start 92%', 'end 52%'],
   });
 
   return (
     <section
       id="vision"
       ref={sectionRef}
-      className="relative mx-auto min-h-[72vh] max-w-[1400px] px-6 md:min-h-[155vh] md:px-12"
+      className="relative mx-auto max-w-[1400px] px-6 py-8 md:min-h-[155vh] md:px-12 md:py-0"
     >
-      <div className="flex min-h-[72vh] items-center justify-center py-8 md:sticky md:top-0 md:min-h-screen md:py-24">
+      <div className="flex items-center justify-center md:sticky md:top-0 md:min-h-screen md:py-24">
         <div className="absolute inset-x-8 top-1/2 h-48 -translate-y-1/2 rounded-full bg-gold/10 blur-3xl" />
 
         <div className="relative max-w-6xl">
