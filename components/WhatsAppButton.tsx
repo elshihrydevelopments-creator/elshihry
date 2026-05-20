@@ -10,8 +10,7 @@ import { motion } from 'motion/react';
 const WhatsAppIcon = () => (
   <svg
     viewBox="0 0 24 24"
-    width="32"
-    height="32"
+    className="h-5 w-5 md:h-6.5 md:w-6.5"
     stroke="currentColor"
     strokeWidth="0"
     fill="currentColor"
@@ -32,13 +31,13 @@ export function WhatsAppButton() {
   const whatsappUrl = getWhatsAppUrl();
 
   return (
-    <div className="fixed bottom-8 right-8 z-[1001]">
+    <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-[1001]">
       <motion.a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackEvent('whatsapp_click', { locale, placement: 'floating_button' })}
-        className="relative block w-[90px] h-[90px]"
+        className="relative block w-[70px] h-[70px] md:w-[90px] md:h-[90px]"
         initial={{ opacity: 0, scale: 0.8, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ delay: 1, duration: 0.5 }}
@@ -51,12 +50,12 @@ export function WhatsAppButton() {
             text={text}
             spinDuration={15}
             onHover="slowDown"
-            className="w-[90px] h-[90px] text-gold opacity-100"
+            className="w-[70px] h-[70px] md:w-[90px] md:h-[90px] text-gold opacity-100"
           />
         </div>
 
         {/* Central Button */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-gold text-rich-black shadow-[0_8px_24px_rgba(241,213,130,0.3)] border border-white/10 z-30 hover:shadow-[0_12px_32px_rgba(241,213,130,0.5)] transition-shadow duration-300">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-gold text-rich-black shadow-[0_8px_24px_rgba(241,213,130,0.3)] border border-white/10 z-30 hover:shadow-[0_12px_32px_rgba(241,213,130,0.5)] transition-shadow duration-300">
            <WhatsAppIcon />
         </div>
         

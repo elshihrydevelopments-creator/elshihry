@@ -1,6 +1,35 @@
 {
   "name": "El Shihry Developments",
-  "description": "The Rolex of Real Estate Websites. A high-end, futuristic, and artistic website for El Shihry Developments.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "displayName": "El Shihry Developments — Official Website",
+  "version": "1.0.0",
+  "description": "The official high-end, futuristic, and artistic website for El Shihry Developments — a premium Saudi real estate developer. Built with Next.js 16, React 19, TypeScript, Tailwind CSS v4, Supabase, Cloudinary, GSAP, and Lenis smooth scroll. Supports Arabic and English (i18n). Designed to the standard of the world's finest luxury real estate brands.",
+  "author": "El Shihry Developments",
+  "url": "https://elshihrydevelopments.com",
+  "locale": ["ar", "en"],
+  "defaultLocale": "ar",
+  "stack": {
+    "framework": "Next.js 16",
+    "language": "TypeScript",
+    "styling": "Tailwind CSS v4",
+    "database": "Supabase (PostgreSQL)",
+    "storage": "Cloudinary",
+    "animation": ["GSAP", "Framer Motion", "Lenis"],
+    "ai": "@google/genai"
+  },
+  "features": [
+    "Bilingual (Arabic / English) with RTL support",
+    "Dynamic project listings with Supabase backend",
+    "Admin dashboard for content management",
+    "Blog system with rich content",
+    "Contact & lead capture forms",
+    "SEO-optimised with sitemap and robots.txt",
+    "Google Analytics integration",
+    "WhatsApp CTA button",
+    "Smooth scroll and advanced GSAP animations",
+    "Horizontal scroll sections",
+    "Structured data (JSON-LD)"
+  ],
+  "category": "Real Estate — Luxury / Premium",
+  "region": "Saudi Arabia",
+  "license": "Proprietary"
 }

@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
-import { siteContent, Locale, SectionHash } from '@/lib/site-content';
+import { siteContent, Locale } from '@/lib/site-content';
+import { getDbBackedProjectsSection } from '@/lib/data/projects';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -43,7 +44,8 @@ export async function getLiveSiteContent() {
 
     sectionsData.forEach(row => {
       if (row.locale === 'ar' || row.locale === 'en') {
-        dynamicContent[row.locale][row.section_key] = mergeWithSectionFallback(row.section_key, row.locale, row.data);
+        const sectionKey = row.section_key === 'projects_meta' ? 'projects' : row.section_key;
+        dynamicContent[row.locale][sectionKey] = mergeWithSectionFallback(sectionKey, row.locale, row.data);
       }
     });
 
@@ -76,6 +78,14 @@ export async function getLiveSiteContent() {
         updated_at: post.updated_at,
       }));
     }
+
+    const [arProjects, enProjects] = await Promise.all([
+      getDbBackedProjectsSection('ar', dynamicContent.ar.projects),
+      getDbBackedProjectsSection('en', dynamicContent.en.projects),
+    ]);
+
+    dynamicContent.ar.projects = arProjects;
+    dynamicContent.en.projects = enProjects;
 
     return dynamicContent;
   } catch (e) {

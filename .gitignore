@@ -28,7 +28,17 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Local database/schema artifacts
+# Database & schema artifacts
+database/
 database schema.sql
 seed.sql
 generate_seed.ts
+
+# Documentation & markdown
+*.md
+docs/
+
+# Archives
+*.rar
+*.zip
+*.tar.gz

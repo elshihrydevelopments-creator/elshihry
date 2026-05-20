@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { getBlogSlugs, getProjectSlugs } from '@/lib/data/public-content';
+import { getPublishedProjectLandingSlugs } from '@/lib/project-landings/queries';
 import { withLocale } from '@/lib/i18n';
 import { siteConfig } from '@/lib/site-config';
 
@@ -8,7 +9,11 @@ const staticPaths = ['/', '/about', '/projects', '/blog', '/contact', '/privacy-
 const locales = ['ar', 'en'] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [projectSlugs, blogSlugs] = await Promise.all([getProjectSlugs(), getBlogSlugs()]);
+  const [projectSlugs, landingSlugs, blogSlugs] = await Promise.all([
+    getProjectSlugs(),
+    getPublishedProjectLandingSlugs(),
+    getBlogSlugs(),
+  ]);
 
   const staticEntries: MetadataRoute.Sitemap = staticPaths.flatMap((path) =>
     locales.map((locale) => ({
@@ -52,5 +57,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  return [...staticEntries, ...projectEntries, ...blogEntries];
+  const landingEntries: MetadataRoute.Sitemap = landingSlugs.flatMap((slug) =>
+    locales.map((locale) => ({
+      alternates: {
+        languages: {
+          ar: `${siteConfig.siteUrl}${withLocale('ar', `/projects/${slug}/land`)}`,
+          en: `${siteConfig.siteUrl}${withLocale('en', `/projects/${slug}/land`)}`,
+        },
+      },
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
+      url: `${siteConfig.siteUrl}${withLocale(locale, `/projects/${slug}/land`)}`,
+    }))
+  );
+
+  return [...staticEntries, ...projectEntries, ...landingEntries, ...blogEntries];
 }

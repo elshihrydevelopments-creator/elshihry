@@ -1,5 +1,6 @@
 import type { BlogPost, Locale, ProjectCard, SiteCopy } from '@/lib/site-content';
 
+import { getDbProjectEntriesBySlug, getDbProjectSlugs } from '@/lib/data/projects';
 import { getRouteContent } from '@/lib/data/route-content';
 
 type LocalizedEntry<T> = Partial<Record<Locale, T>>;
@@ -9,8 +10,13 @@ function unique<T>(items: T[]) {
 }
 
 export async function getProjectSlugs() {
-  const content = await getRouteContent(['projects']) as Record<Locale, Partial<SiteCopy>>;
+  const dbSlugs = await getDbProjectSlugs();
 
+  if (dbSlugs.length > 0) {
+    return unique(dbSlugs);
+  }
+
+  const content = await getRouteContent(['projects']) as Record<Locale, Partial<SiteCopy>>;
   return unique([
     ...(content.en?.projects?.items ?? []).map((item) => item.slug),
     ...(content.ar?.projects?.items ?? []).map((item) => item.slug),
@@ -21,6 +27,15 @@ export async function getProjectEntriesBySlug(slug: string): Promise<{
   entries: LocalizedEntry<ProjectCard>;
   projectIndex: number;
 }> {
+  const dbResult = await getDbProjectEntriesBySlug(slug);
+
+  if (dbResult.project) {
+    return {
+      entries: dbResult.entries,
+      projectIndex: dbResult.projectIndex,
+    };
+  }
+
   const content = await getRouteContent(['projects']) as Record<Locale, Partial<SiteCopy>>;
   const englishProjects = content.en?.projects?.items ?? [];
   const arabicProjects = content.ar?.projects?.items ?? [];

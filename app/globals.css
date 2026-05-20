@@ -81,6 +81,19 @@
     }
   }
 
+  @keyframes grow-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .animate-grow-x {
+    animation: grow-x 5s linear infinite;
+  }
+
   .glass-panel {
     @apply bg-glass backdrop-blur-[24px] border border-glass-border shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
   }

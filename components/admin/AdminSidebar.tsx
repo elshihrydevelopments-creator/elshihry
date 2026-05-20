@@ -14,9 +14,12 @@ import {
   Building2,
   BookOpen,
   Phone,
+  LayoutTemplate,
+  UserRoundSearch,
   ChevronDown,
   X,
 } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 
@@ -27,6 +30,11 @@ const PAGE_LINKS = [
   { href: '/admin/pages/blog', label: 'المدونة', icon: BookOpen },
   { href: '/admin/pages/contact', label: 'تواصل', icon: Phone },
   { href: '/admin/pages/global', label: 'العناصر المشتركة', icon: Globe },
+];
+
+const FEATURE_LINKS = [
+  { href: '/admin/project-land', label: 'صفحات الهبوط', icon: LayoutTemplate },
+  { href: '/admin/leads', label: 'العملاء', icon: UserRoundSearch },
 ];
 
 interface AdminSidebarProps {
@@ -51,12 +59,8 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     }
   };
 
-  const isActive = (href: string) =>
-    href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(href);
-
-  const handleNavigate = () => {
-    onClose();
-  };
+  const isActive = (href: string) => (href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(href));
+  const handleNavigate = () => onClose();
 
   return (
     <aside
@@ -66,17 +70,15 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       )}
     >
       <div className="flex items-center justify-between border-b border-white/5 p-5 md:p-6">
-        <div className="flex items-center">
-          <Image
-            src="/logo.webp"
-            alt="El Shihry"
-            width={120}
-            height={40}
-            sizes="120px"
-            loading="eager"
-            className="h-10 w-auto object-contain"
-          />
-        </div>
+        <Image
+          src="/logo.webp"
+          alt="El Shihry"
+          width={120}
+          height={40}
+          sizes="120px"
+          loading="eager"
+          className="h-10 w-auto object-contain"
+        />
 
         <button
           type="button"
@@ -111,7 +113,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             <ChevronDown className={cn('h-3 w-3 transition-transform', pagesOpen ? 'rotate-180' : '')} />
           </button>
 
-          {pagesOpen && (
+          {pagesOpen ? (
             <div className="mt-1 space-y-1">
               {PAGE_LINKS.map((link) => {
                 const Icon = link.icon;
@@ -133,7 +135,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 );
               })}
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="pt-4">
@@ -143,14 +145,37 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             onClick={handleNavigate}
             className={cn(
               'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition-all duration-200',
-              isActive('/admin/blog')
-                ? 'bg-gold/10 font-bold text-gold'
-                : 'text-white/55 hover:bg-white/5 hover:text-white'
+              isActive('/admin/blog') ? 'bg-gold/10 font-bold text-gold' : 'text-white/55 hover:bg-white/5 hover:text-white'
             )}
           >
             <FileText className="h-4 w-4" />
             <span>المقالات</span>
           </Link>
+        </div>
+
+        <div className="pt-4">
+          <p className="px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-white/25">المشاريع والعملاء</p>
+          <div className="mt-1 space-y-1">
+            {FEATURE_LINKS.map((link) => {
+              const Icon = link.icon;
+              const active = isActive(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href as any}
+                  onClick={handleNavigate}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition-all duration-200',
+                    active ? 'bg-gold/10 font-bold text-gold' : 'text-white/55 hover:bg-white/5 hover:text-white'
+                  )}
+                >
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </nav>
 

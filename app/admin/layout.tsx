@@ -1,8 +1,6 @@
-import { Alexandria, IBM_Plex_Sans_Arabic } from 'next/font/google';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { IBM_Plex_Sans_Arabic } from 'next/font/google';
 import { ToastProvider } from '@/components/admin/ToastProvider';
 
-const alexandria = Alexandria({ subsets: ['arabic', 'latin'] });
 const ibmPlex = IBM_Plex_Sans_Arabic({ subsets: ['arabic', 'latin'], weight: ['300', '400', '500', '700'] });
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

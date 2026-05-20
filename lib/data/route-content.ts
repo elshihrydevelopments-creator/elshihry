@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import type { BlogPost, Locale, SiteCopy } from '@/lib/site-content';
 import { siteContent } from '@/lib/site-content';
+import { getDbBackedProjectsSection } from '@/lib/data/projects';
 
 export type PartialSiteContent = Partial<Record<Locale, Partial<SiteCopy>>>;
 export type SiteSectionKey = keyof SiteCopy;
@@ -132,6 +133,7 @@ function mapBlogPosts(posts: BlogRow[] | null | undefined): Record<Locale, BlogP
 export async function getRouteContent(sectionKeys: SiteSectionKey[]): Promise<PartialSiteContent> {
   const uniqueKeys = Array.from(new Set(sectionKeys));
   const fallback = getFallbackSections(uniqueKeys);
+  const dbSectionKeys = uniqueKeys.map((sectionKey) => (sectionKey === 'projects' ? 'projects_meta' : sectionKey));
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return fallback;
@@ -146,7 +148,7 @@ export async function getRouteContent(sectionKeys: SiteSectionKey[]): Promise<Pa
         supabase
           .from('site_sections')
           .select('section_key, locale, data')
-          .in('section_key', uniqueKeys)
+          .in('section_key', dbSectionKeys)
           .in('locale', ['ar', 'en']),
         shouldFetchBlogPosts
           ? supabase
@@ -172,7 +174,7 @@ export async function getRouteContent(sectionKeys: SiteSectionKey[]): Promise<Pa
       }
 
       const locale = row.locale as Locale;
-      const sectionKey = row.section_key as SiteSectionKey;
+      const sectionKey = (row.section_key === 'projects_meta' ? 'projects' : row.section_key) as SiteSectionKey;
       content[locale] ??= {};
       const localizedContent = content[locale] as Record<string, unknown>;
       localizedContent[sectionKey] = mergeWithSectionFallback(sectionKey, locale, row.data);
@@ -189,6 +191,18 @@ export async function getRouteContent(sectionKeys: SiteSectionKey[]): Promise<Pa
           items: localizedPosts[locale],
         };
       });
+    }
+
+    if (uniqueKeys.includes('projects')) {
+      const [arProjects, enProjects] = await Promise.all([
+        getDbBackedProjectsSection('ar', content.ar?.projects as SiteCopy['projects'] | undefined),
+        getDbBackedProjectsSection('en', content.en?.projects as SiteCopy['projects'] | undefined),
+      ]);
+
+      content.ar ??= {};
+      content.en ??= {};
+      content.ar.projects = arProjects;
+      content.en.projects = enProjects;
     }
 
     return content;
