@@ -5,22 +5,26 @@ import { ProjectLandingPageClient } from '@/components/project-land/ProjectLandi
 import { RouteContentProvider } from '@/components/RouteContentProvider';
 import { StructuredData } from '@/components/StructuredData';
 import { buildBreadcrumbSchema, buildLocalizedMetadata, buildWebPageSchema } from '@/lib/seo';
-import { getProjectLandingBySlug, getPublishedProjectLandingSlugs } from '@/lib/project-landings/queries';
+import { getProjectLandingBySlug } from '@/lib/project-landings/queries';
 import { getRouteContent } from '@/lib/data/route-content';
+
+// Always render dynamically — this page relies on cookies() via createClient()
+// and must never be statically generated at build time.
+export const dynamic = 'force-dynamic';
 
 type PageProps = {
   params: Promise<{ locale: 'ar' | 'en'; slug: string }>;
 };
 
-export async function generateStaticParams() {
-  const slugs = await getPublishedProjectLandingSlugs();
-
-  return slugs.flatMap((slug) => [{ locale: 'ar' as const, slug }, { locale: 'en' as const, slug }]);
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const landing = await getProjectLandingBySlug(slug);
+
+  let landing = null;
+  try {
+    landing = await getProjectLandingBySlug(slug);
+  } catch {
+    // Fall back to a generic no-index tag if data fetch fails
+  }
 
   if (!landing) {
     return buildLocalizedMetadata({
@@ -46,10 +50,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectLandingPage({ params }: PageProps) {
   const { locale, slug } = await params;
-  const [landing, dynamicContent] = await Promise.all([
-    getProjectLandingBySlug(slug),
-    getRouteContent(['nav', 'footer']),
-  ]);
+
+  let landing = null;
+  let dynamicContent = null;
+
+  try {
+    [landing, dynamicContent] = await Promise.all([
+      getProjectLandingBySlug(slug),
+      getRouteContent(['nav', 'footer']),
+    ]);
+  } catch (err) {
+    console.error(`[ProjectLandingPage] Data fetch failed for slug="${slug}":`, err);
+    notFound();
+  }
 
   if (!landing) {
     notFound();

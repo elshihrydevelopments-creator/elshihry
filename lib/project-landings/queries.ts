@@ -208,30 +208,35 @@ export async function getProjectLandingBySlug(slug: string): Promise<ProjectLand
     return null;
   }
 
-  const supabase = await createClient();
-  const { data: landingRows, error } = await supabase
-    .from('project_landings')
-    .select(LANDING_SELECT)
-    .eq('status', 'published')
-    .eq('projects.slug', slug)
-    .limit(1);
+  try {
+    const supabase = await createClient();
+    const { data: landingRows, error } = await supabase
+      .from('project_landings')
+      .select(LANDING_SELECT)
+      .eq('status', 'published')
+      .eq('projects.slug', slug)
+      .limit(1);
 
-  if (error || !landingRows || landingRows.length === 0) {
+    if (error || !landingRows || landingRows.length === 0) {
+      return null;
+    }
+
+    const landingRow = landingRows[0] as any;
+    const landingId = landingRow.id as string;
+    const projectId = landingRow.project_id as string;
+    const { data: sections } = await supabase
+      .from('project_landing_sections')
+      .select('*')
+      .eq('project_landing_id', landingId)
+      .in('locale', ['ar', 'en'])
+      .order('sort_order', { ascending: true });
+    const extras = await loadLandingExtras(supabase, landingId, projectId);
+
+    return buildLandingAggregate(landingRow, sections as any, extras.units as any, extras.media as any);
+  } catch (err) {
+    console.error(`[getProjectLandingBySlug] Failed for slug="${slug}":`, err);
     return null;
   }
-
-  const landingRow = landingRows[0] as any;
-  const landingId = landingRow.id as string;
-  const projectId = landingRow.project_id as string;
-  const { data: sections } = await supabase
-    .from('project_landing_sections')
-    .select('*')
-    .eq('project_landing_id', landingId)
-    .in('locale', ['ar', 'en'])
-    .order('sort_order', { ascending: true });
-  const extras = await loadLandingExtras(supabase, landingId, projectId);
-
-  return buildLandingAggregate(landingRow, sections as any, extras.units as any, extras.media as any);
 }
 
 export async function getProjectLandingByProjectId(projectId: string): Promise<ProjectLandingAggregate | null> {
@@ -239,29 +244,34 @@ export async function getProjectLandingByProjectId(projectId: string): Promise<P
     return null;
   }
 
-  const supabase = await createClient();
-  const { data: landingRows, error } = await supabase
-    .from('project_landings')
-    .select(LANDING_SELECT)
-    .eq('project_id', projectId)
-    .limit(1);
+  try {
+    const supabase = await createClient();
+    const { data: landingRows, error } = await supabase
+      .from('project_landings')
+      .select(LANDING_SELECT)
+      .eq('project_id', projectId)
+      .limit(1);
 
-  if (error || !landingRows || landingRows.length === 0) {
+    if (error || !landingRows || landingRows.length === 0) {
+      return null;
+    }
+
+    const landingRow = landingRows[0] as any;
+    const landingId = landingRow.id as string;
+    const projectIdValue = landingRow.project_id as string;
+    const { data: sections } = await supabase
+      .from('project_landing_sections')
+      .select('*')
+      .eq('project_landing_id', landingId)
+      .in('locale', ['ar', 'en'])
+      .order('sort_order', { ascending: true });
+    const extras = await loadLandingExtras(supabase, landingId, projectIdValue);
+
+    return buildLandingAggregate(landingRow, sections as any, extras.units as any, extras.media as any);
+  } catch (err) {
+    console.error(`[getProjectLandingByProjectId] Failed for projectId="${projectId}":`, err);
     return null;
   }
-
-  const landingRow = landingRows[0] as any;
-  const landingId = landingRow.id as string;
-  const projectIdValue = landingRow.project_id as string;
-  const { data: sections } = await supabase
-    .from('project_landing_sections')
-    .select('*')
-    .eq('project_landing_id', landingId)
-    .in('locale', ['ar', 'en'])
-    .order('sort_order', { ascending: true });
-  const extras = await loadLandingExtras(supabase, landingId, projectIdValue);
-
-  return buildLandingAggregate(landingRow, sections as any, extras.units as any, extras.media as any);
 }
 
 export async function getProjectLandingByIdForAlias(projectId: string): Promise<ProjectLandingRecord | null> {
