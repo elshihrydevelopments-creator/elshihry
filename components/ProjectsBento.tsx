@@ -53,6 +53,7 @@ export function ProjectsBento() {
     locale === 'ar'
       ? 'استكشف مجموعة من مشاريعنا التي تعكس رؤيتنا في الابتكار والجودة'
       : copy.projects.description;
+  const projects = copy.projects.items;
 
   useGSAP(
     () => {
@@ -150,13 +151,13 @@ export function ProjectsBento() {
       </LocaleReveal>
 
       <div className="grid grid-cols-12 gap-6">
-        {projectLayout.map((project, index) => {
-          const item = copy.projects.items[index];
+        {projects.map((item, index) => {
+          const project = projectLayout[index % projectLayout.length];
           const projectImage = item.cover_url || siteImages.projects[index % siteImages.projects.length];
 
           return (
             <Link
-              key={project.id}
+              key={item.slug}
               href={localizeHref(`/projects/${item.slug}`) as any}
               onClick={() => trackEvent('project_cta_click', { locale, placement: 'home_projects', slug: item.slug })}
               className={`bento-card group relative block overflow-hidden rounded-3xl ${project.span} ${project.height}`}
@@ -172,13 +173,13 @@ export function ProjectsBento() {
               />
 
               <LocaleReveal
-                localeKey={`project-card-${locale}-${project.id}`}
+                localeKey={`project-card-${locale}-${item.slug}`}
                 className="absolute bottom-0 left-0 z-20 w-full translate-y-4 p-8 transition-transform duration-500 group-hover:translate-y-0"
               >
                 <p className="mb-2 text-sm font-bold tracking-[0.25em] text-gold uppercase">{item.location}</p>
                 <ScrollRevealHeading
                   as="h3"
-                  localeKey={`project-card-title-${locale}-${project.id}`}
+                  localeKey={`project-card-title-${locale}-${item.slug}`}
                   start="top 90%"
                   className="text-3xl font-bold text-white md:text-4xl"
                   lines={[item.title]}

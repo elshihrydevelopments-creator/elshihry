@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { requireAdminUser } from '@/lib/admin-auth';
+import { revalidateProjectContentById } from '@/lib/project-landings/mutations';
 import { createClient } from '@/lib/supabase/server';
 
 type RouteContext = { params: Promise<{ projectId: string }> };
@@ -87,6 +88,8 @@ export async function PUT(req: Request, { params }: RouteContext) {
 
     if (error) throw new Error(error.message);
 
+    await revalidateProjectContentById(projectId);
+
     return NextResponse.json({ data });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -100,12 +103,14 @@ export async function DELETE(req: Request, { params }: RouteContext) {
     const auth = await requireAdminUser(supabase);
     if (!auth.ok) return auth.response;
 
-    await params; // consume
+    const { projectId } = await params;
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 
     const { error } = await supabase.from('project_landing_media').delete().eq('id', id);
     if (error) throw new Error(error.message);
+
+    await revalidateProjectContentById(projectId);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

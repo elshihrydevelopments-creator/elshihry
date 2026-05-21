@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 import { createClient } from '@/lib/supabase/server';
 import { adminProjectPayloadSchema, projectLandingEditorPayloadSchema } from '@/lib/project-landings/schemas';
@@ -34,14 +34,35 @@ function buildLandingSectionRows(projectLandingId: string, sections: LocalizedLa
   );
 }
 
-function revalidateProjectPaths(slug: string) {
+function revalidateSiteSectionsTag() {
+  // @ts-ignore - Next 16 types in this environment require the cache profile argument.
+  revalidateTag('site-sections', 'default');
+}
+
+function revalidateProjectPaths(slug?: string | null) {
+  revalidateSiteSectionsTag();
+  revalidatePath('/', 'layout');
+  revalidatePath('/');
+
   ['ar', 'en'].forEach((locale) => {
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/projects`);
-    revalidatePath(`/${locale}/projects/${slug}`);
-    revalidatePath(`/${locale}/projects/${slug}/land`);
+
+    if (slug) {
+      revalidatePath(`/${locale}/projects/${slug}`);
+      revalidatePath(`/${locale}/projects/${slug}/land`);
+      revalidatePath(`/${locale}/projects/${slug}/thank-you`);
+    }
   });
+
   revalidatePath('/projects');
+  revalidatePath('/[locale]/projects/[slug]', 'page');
+  revalidatePath('/[locale]/projects/[slug]/land', 'page');
+}
+
+export async function revalidateProjectContentById(projectId: string) {
+  const project = await getAdminProjectById(projectId);
+  revalidateProjectPaths(project?.slug);
 }
 
 async function ensureLandingForProject(projectId: string) {
@@ -94,6 +115,7 @@ async function ensureLandingForProject(projectId: string) {
 
 export async function upsertAdminProject(payload: AdminProjectPayload) {
   const parsed = adminProjectPayloadSchema.parse(payload);
+  const previousProject = parsed.id ? await getAdminProjectById(parsed.id) : null;
   const supabase = await createClient();
 
   const projectPayload = {
@@ -184,6 +206,10 @@ export async function upsertAdminProject(payload: AdminProjectPayload) {
 
   const landing = await ensureLandingForProject(projectId);
   revalidateProjectPaths(projectRow.slug as string);
+
+  if (previousProject?.slug && previousProject.slug !== projectRow.slug) {
+    revalidateProjectPaths(previousProject.slug);
+  }
 
   return {
     landing,
