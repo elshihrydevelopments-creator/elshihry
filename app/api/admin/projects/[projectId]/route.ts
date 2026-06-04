@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { requireAdminUser } from '@/lib/admin-auth';
 import { getAdminProjectById } from '@/lib/project-landings/queries';
-import { upsertAdminProject } from '@/lib/project-landings/mutations';
+import { deleteAdminProject, upsertAdminProject } from '@/lib/project-landings/mutations';
 import { createClient } from '@/lib/supabase/server';
 
 type RouteContext = {
@@ -47,5 +47,23 @@ export async function PATCH(req: Request, { params }: RouteContext) {
     return NextResponse.json({ data: result });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Failed to update project' }, { status: 500 });
+  }
+}
+
+export async function DELETE(_: Request, { params }: RouteContext) {
+  try {
+    const supabase = await createClient();
+    const auth = await requireAdminUser(supabase);
+
+    if (!auth.ok) {
+      return auth.response;
+    }
+
+    const { projectId } = await params;
+    await deleteAdminProject(projectId);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to delete project' }, { status: 500 });
   }
 }

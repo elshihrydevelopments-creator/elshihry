@@ -314,3 +314,19 @@ export async function updateLeadStatus(leadId: string, status: string) {
     throw new Error(error.message);
   }
 }
+
+export async function deleteAdminProject(projectId: string) {
+  const project = await getAdminProjectById(projectId);
+  if (!project) {
+    throw new Error('Project not found');
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.from('projects').delete().eq('id', projectId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidateProjectPaths(project.slug);
+}

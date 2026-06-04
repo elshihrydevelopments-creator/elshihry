@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Building2, ExternalLink, Loader2, Plus, Save, Trash2 } from 'lucide-react';
 
 import { SmartUploader } from '@/components/admin/SmartUploader';
@@ -109,6 +109,8 @@ export function ProjectsManager() {
   const [editingProject, setEditingProject] = useState<AdminProjectPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { toast } = useToast();
 
   const loadProjects = useCallback(async () => {
@@ -178,6 +180,31 @@ export function ProjectsManager() {
       toast(error.message || 'تعذر حفظ المشروع', 'error');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!editingProject || !editingProject.id) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/admin/projects/${editingProject.id}`, {
+        method: 'DELETE',
+      });
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.error || 'Failed to delete project');
+      }
+
+      toast('تم حذف المشروع والصفحة التابعة له بنجاح');
+      setEditingProject(null);
+      await loadProjects();
+    } catch (error: any) {
+      toast(error.message || 'تعذر حذف المشروع', 'error');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -264,15 +291,28 @@ export function ProjectsManager() {
                   <h3 className="text-2xl font-bold text-white">{editingProject.id ? 'تعديل المشروع' : 'مشروع جديد'}</h3>
                   <p className="mt-1 text-sm text-white/40">سيتم إنشاء صفحة هبوط تلقائيًا لهذا المشروع عند الحفظ.</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-rich-black transition hover:bg-white disabled:opacity-60"
-                >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                  حفظ المشروع
-                </button>
+                <div className="flex items-center gap-3">
+                  {editingProject.id && (
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={saving || isDeleting}
+                      className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-red-400 transition hover:bg-red-500/20 disabled:opacity-60"
+                    >
+                      {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                      حذف المشروع
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={saving || isDeleting}
+                    className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-rich-black transition hover:bg-white disabled:opacity-60"
+                  >
+                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                    حفظ المشروع
+                  </button>
+                </div>
               </div>
 
               <div className="grid gap-6">
@@ -508,6 +548,53 @@ export function ProjectsManager() {
           )}
         </div>
       </div>
+
+      {/* Custom Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="glass-panel w-full max-w-md rounded-[2.4rem] border border-white/10 bg-rich-black-light p-6 text-center shadow-2xl"
+            >
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10 text-red-400">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              
+              <h3 className="text-xl font-bold text-white mb-2">تأكيد حذف المشروع</h3>
+              
+              <p className="text-sm text-white/60 leading-relaxed mb-6">
+                هل أنت متأكد من رغبتك في حذف المشروع <span className="font-bold text-white">"{editingProject?.title_ar}"</span>؟
+                <br />
+                <span className="text-red-400 font-medium">تحذير:</span> سيتم حذف صفحة الهبوط وجميع الإحصائيات والمميزات وبيانات العملاء (Leads) المرتبطة بهذا المشروع بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.
+              </p>
+              
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-red-600 disabled:opacity-60 sm:w-auto"
+                >
+                  {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  نعم، احذف المشروع
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/70 transition hover:bg-white/10 hover:text-white sm:w-auto"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
