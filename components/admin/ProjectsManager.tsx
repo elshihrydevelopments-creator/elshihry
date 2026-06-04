@@ -273,6 +273,18 @@ export function ProjectsManager() {
                   <ExternalLink className="h-4 w-4" />
                   صفحة الهبوط
                 </Link>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setEditingProject(mapAggregateToPayload(project));
+                    setShowDeleteConfirm(true);
+                  }}
+                  className="inline-flex items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 p-3 text-red-400 transition hover:bg-red-500/20"
+                  title="حذف المشروع"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </div>
             </motion.div>
           ))}
