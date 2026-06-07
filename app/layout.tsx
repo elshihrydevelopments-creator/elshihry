@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { Alexandria, IBM_Plex_Sans_Arabic, Inter, Urbanist } from 'next/font/google';
 import './globals.css';
+import Script from 'next/script';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { getLocaleDirection, isLocale } from '@/lib/i18n';
 import type { Locale } from '@/lib/site-content';
@@ -67,6 +68,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className={locale === 'ar' ? 'font-arabic' : 'font-sans'} suppressHydrationWarning>
         <GoogleAnalytics />
+        <Script
+          src="https://api.alshahri.com/crm-tracker.js?key=sk_lp_880ab6b6fca403ba7d370bd0067d5ac2fc3e2f478c8b9757"
+          strategy="afterInteractive"
+        />
         <style dangerouslySetInnerHTML={{ __html: `
           .motion-safe {
              will-change: transform, opacity;

@@ -299,6 +299,44 @@ export async function createLead(input: ProjectLeadInput): Promise<ProjectLeadRe
     throw new Error(error?.message || 'Failed to save lead');
   }
 
+  const crmApiUrl = process.env.CRM_API_URL;
+  const crmApiKey = process.env.CRM_API_KEY;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://elshihry.com';
+
+  if (crmApiUrl && crmApiKey) {
+    try {
+      const response = await fetch(`${crmApiUrl}/api/webhooks/website/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': crmApiKey,
+          'Origin': siteUrl,
+        },
+        body: JSON.stringify({
+          name: parsed.full_name,
+          phone: parsed.phone,
+          whatsapp: parsed.whatsapp_number || parsed.phone,
+          email: parsed.email || undefined,
+          message: parsed.message || `Project: ${landing.project.title_en} (${landing.project.slug})`,
+          page_url: parsed.page_url || undefined,
+          utm_source: parsed.utm_source || undefined,
+          utm_medium: parsed.utm_medium || undefined,
+          utm_campaign: parsed.utm_campaign || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.message || result.error || 'Failed to submit lead to CRM');
+      }
+    } catch (crmError: any) {
+      console.error('Error sending lead to CRM:', crmError.message);
+      throw new Error(crmError.message || 'CRM Webhook Submission failed');
+    }
+  } else {
+    console.warn('CRM Integration skipped: CRM_API_URL or CRM_API_KEY is not defined in environment variables.');
+  }
+
   return {
     ...data,
     project_slug: landing.project.slug,

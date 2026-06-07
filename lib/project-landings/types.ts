@@ -265,6 +265,10 @@ export type ProjectLeadInput = {
   project_slug: string;
   source_path: string;
   whatsapp_number?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  page_url?: string;
 };
 
 export type ProjectLandingEditorPayload = {

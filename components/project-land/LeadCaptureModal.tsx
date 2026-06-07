@@ -96,6 +96,7 @@ export function LeadCaptureModal({
     setErrorMessage('');
 
     const formData = new FormData(event.currentTarget);
+    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const payload = {
       full_name: String(formData.get('full_name') || ''),
       locale,
@@ -103,6 +104,10 @@ export function LeadCaptureModal({
       project_slug: projectSlug,
       source_path: typeof window !== 'undefined' ? window.location.pathname : `/projects/${projectSlug}/land`,
       whatsapp_number: String(formData.get('whatsapp_number') || ''),
+      utm_source: searchParams?.get('utm_source') || '',
+      utm_medium: searchParams?.get('utm_medium') || '',
+      utm_campaign: searchParams?.get('utm_campaign') || '',
+      page_url: typeof window !== 'undefined' ? window.location.href : '',
     };
 
     try {

@@ -179,6 +179,10 @@ export const projectLeadInputSchema = z.object({
   project_slug: z.string().trim().min(1),
   source_path: z.string().trim().min(1),
   whatsapp_number: z.string().trim().min(6).max(30).optional().or(z.literal('')),
+  utm_source: z.string().trim().optional().default(''),
+  utm_medium: z.string().trim().optional().default(''),
+  utm_campaign: z.string().trim().optional().default(''),
+  page_url: z.string().trim().optional().default(''),
 });
 
 export const adminProjectPayloadSchema = z.object({
