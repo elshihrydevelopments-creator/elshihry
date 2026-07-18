@@ -134,7 +134,7 @@ export async function getPublicProjects(): Promise<ProjectAggregate[]> {
       .from('projects')
       .select(PROJECT_SELECT)
       .eq('published', true)
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: false });
 
     if (error || !data) {
       return [];
@@ -176,7 +176,7 @@ export async function getAdminProjects(): Promise<ProjectAggregate[]> {
   const { data, error } = await supabase
     .from('projects')
     .select(PROJECT_SELECT)
-    .order('display_order', { ascending: true });
+    .order('display_order', { ascending: false });
 
   if (error || !data) {
     throw new Error(error?.message || 'Failed to load projects');

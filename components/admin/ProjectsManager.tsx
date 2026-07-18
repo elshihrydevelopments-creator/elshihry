@@ -136,7 +136,7 @@ export function ProjectsManager() {
   }, [loadProjects]);
 
   const sortedItems = useMemo(
-    () => [...items].sort((a, b) => a.display_order - b.display_order || a.title_ar.localeCompare(b.title_ar)),
+    () => [...items].sort((a, b) => b.display_order - a.display_order || a.title_ar.localeCompare(b.title_ar)),
     [items]
   );
 
@@ -373,14 +373,31 @@ export function ProjectsManager() {
                     </label>
                   </div>
 
-                  <div className="mt-4">
-                    <FieldLabel>Slug</FieldLabel>
-                    <input
-                      dir="ltr"
-                      value={editingProject.slug}
-                      readOnly
-                      className="w-full rounded-xl border border-white/5 bg-black/20 px-4 py-3 font-mono text-sm text-gold/70 outline-none"
-                    />
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <FieldLabel>Slug</FieldLabel>
+                      <input
+                        dir="ltr"
+                        value={editingProject.slug}
+                        readOnly
+                        className="w-full rounded-xl border border-white/5 bg-black/20 px-4 py-3 font-mono text-sm text-gold/70 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <FieldLabel>ترتيب العرض (Display Order)</FieldLabel>
+                      <input
+                        type="number"
+                        min="0"
+                        value={editingProject.display_order}
+                        onChange={(event) =>
+                          setEditingProject({
+                            ...editingProject,
+                            display_order: parseInt(event.target.value, 10) || 0,
+                          })
+                        }
+                        className="w-full rounded-xl border border-white/10 bg-rich-black-light px-4 py-3 text-white outline-none focus:border-gold/40"
+                      />
+                    </div>
                   </div>
 
                   <div className="mt-4 grid gap-4 md:grid-cols-2">

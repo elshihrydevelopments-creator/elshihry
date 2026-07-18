@@ -53,7 +53,7 @@ function getMockLanding(locale: 'ar' | 'en'): ProjectLandingAggregate {
     payment_plan_summary: isArabic ? 'تسهيلات سداد حتى ٧ سنوات' : 'Up to 7 years payment options',
     nearby_landmarks: isArabic ? ['الجامعة الأمريكية بالقاهرة', 'شارع التسعين'] : ['AUC Campus', 'El Teseen St.'],
     faq_blocks: [],
-    display_order: 0,
+    display_order: 100,
     published: true,
     details: [],
     stats: [

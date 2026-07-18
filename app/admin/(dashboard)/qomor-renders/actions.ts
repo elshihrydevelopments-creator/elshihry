@@ -42,7 +42,7 @@ export async function seedQomorRendersProject() {
     payment_plan_summary: 'تسهيلات سداد حتى ٧ سنوات',
     nearby_landmarks: ['الجامعة الأمريكية بالقاهرة', 'شارع التسعين'],
     published: true,
-    display_order: 0,
+    display_order: 100,
   };
 
   if (existingProject) {

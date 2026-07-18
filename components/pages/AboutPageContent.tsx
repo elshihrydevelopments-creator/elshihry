@@ -15,7 +15,7 @@ export function AboutPageContent() {
   const leadershipImageUrl = copy.aboutLeadership.imageUrl.trim();
   const leadershipImageSrc = leadershipImageUrl || siteImages.lifestyle[3];
   const leadershipImageKey =
-    typeof leadershipImageSrc === 'string' ? leadershipImageSrc : leadershipImageSrc.src;
+    typeof leadershipImageSrc === 'string' ? leadershipImageSrc : (leadershipImageSrc as any).src;
 
   return (
     <div className="pt-32 pb-20 overflow-x-hidden">
