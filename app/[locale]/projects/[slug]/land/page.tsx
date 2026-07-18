@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { ProjectLandingPageClient } from '@/components/project-land/ProjectLandingPageClient';
 import { RouteContentProvider } from '@/components/RouteContentProvider';
@@ -18,6 +18,15 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+
+  if (slug === 'qomor-renders') {
+    return buildLocalizedMetadata({
+      description: 'Qomor Renders luxury design presentation.',
+      locale,
+      path: '/qomor-renders',
+      title: 'Qomor Renders | El Shihry',
+    });
+  }
 
   let landing = null;
   try {
@@ -50,6 +59,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectLandingPage({ params }: PageProps) {
   const { locale, slug } = await params;
+
+  if (slug === 'qomor-renders') {
+    redirect(`/${locale}/qomor-renders`);
+  }
 
   let landing = null;
   let dynamicContent = null;

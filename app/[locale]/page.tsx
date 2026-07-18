@@ -4,10 +4,8 @@ import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Philosophy } from '@/components/Philosophy';
 import { ProjectsBento } from '@/components/ProjectsBento';
-import { WhyInvest } from '@/components/WhyInvest';
 import { ArchitecturalExcellence } from '@/components/ArchitecturalExcellence';
 import { FunctionalSections } from '@/components/FunctionalSections';
-import { Marquee } from '@/components/Marquee';
 import { HorizontalScroll } from '@/components/HorizontalScroll';
 import { RouteContentProvider } from '@/components/RouteContentProvider';
 import { StructuredData } from '@/components/StructuredData';
@@ -41,7 +39,7 @@ export default async function LocalizedHomePage({
   params: Promise<{ locale: 'ar' | 'en' }>;
 }) {
   const { locale } = await params;
-  const sectionKeys = ['hero', 'about', 'philosophy', 'projects', 'whyInvest', 'arch', 'marquee', 'lifestyle', 'blog'] as const;
+  const sectionKeys = ['hero', 'about', 'philosophy', 'projects', 'arch', 'contact', 'lifestyle', 'blog'] as const;
   const content = await getRouteContent([...sectionKeys]);
   const hero = content[locale]?.hero;
   const about = content[locale]?.about;
@@ -71,9 +69,7 @@ export default async function LocalizedHomePage({
         <About />
         <Philosophy />
         <ProjectsBento />
-        <WhyInvest />
         <ArchitecturalExcellence />
-        <Marquee />
         <HorizontalScroll />
         <FunctionalSections />
       </div>

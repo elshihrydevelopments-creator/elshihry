@@ -168,6 +168,7 @@ export function ProjectsBento() {
                 src={projectImage}
                 alt={item.title}
                 fill
+                priority={index <= 2}
                 sizes={project.sizes}
                 className="bento-img object-cover transition-transform duration-700"
               />

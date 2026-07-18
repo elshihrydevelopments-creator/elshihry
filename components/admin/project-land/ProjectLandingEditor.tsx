@@ -33,6 +33,7 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(true);
   const [mediaItems, setMediaItems] = useState<DraftMediaItem[]>([]);
   const [units, setUnits] = useState<DraftUnit[]>([]);
+  const [brochureUrl, setBrochureUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
   const loadLanding = useCallback(async () => {
@@ -50,6 +51,7 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
         ...agg.media.night_exterior,
       ].map((m) => ({ ...m })));
       setUnits(agg.units.map((u) => ({ ...u })));
+      setBrochureUrl(agg.project.brochure_url || null);
     } catch (e: any) {
       toast(e.message || 'تعذر التحميل', 'error');
     } finally {
@@ -76,6 +78,25 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
             [key]: {
               ...cur.sections[activeLocale][key],
               data: updater(cur.sections[activeLocale][key].data as never),
+            },
+          },
+        },
+      };
+    });
+  }
+
+  function toggleSectionEnabled(key: ProjectLandingSectionKey, enabled: boolean) {
+    setData((cur) => {
+      if (!cur) return cur;
+      return {
+        ...cur,
+        sections: {
+          ...cur.sections,
+          [activeLocale]: {
+            ...cur.sections[activeLocale],
+            [key]: {
+              ...cur.sections[activeLocale][key],
+              is_enabled: enabled,
             },
           },
         },
@@ -140,7 +161,12 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
     try {
       // 1. Sections
       const r1 = await fetch(`/api/admin/project-landings/${projectId}`, {
-        body: JSON.stringify({ sections: data.sections, status: data.landing.status, thumbnailUrl: data.landing.thumbnail_url }),
+        body: JSON.stringify({ 
+          sections: data.sections, 
+          status: data.landing.status, 
+          thumbnailUrl: data.landing.thumbnail_url,
+          brochureUrl: brochureUrl
+        }),
         headers: { 'Content-Type': 'application/json' }, method: 'PATCH',
       });
       if (!r1.ok) throw new Error((await r1.json()).error);
@@ -189,6 +215,7 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
   const faq = currentSections.faq.data;
   const leadForm = currentSections.lead_form.data;
   const seo = currentSections.seo.data;
+  const downloadBrochure = currentSections.download_brochure?.data;
 
   return (
     <div className="space-y-5">
@@ -306,6 +333,15 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">Hero Image</p>
         <SmartUploader value={hero.heroImageUrl || ''} onChange={(urls) => updateSectionData('hero', (c) => ({ ...c, heroImageUrl: urls[0] || '' }))} />
         <LabeledInput label="Hero Image Alt Text" value={hero.heroImageAlt} onChange={(e) => updateSectionData('hero', (c) => ({ ...c, heroImageAlt: e.target.value }))} />
+        
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">Hero Video (فيديو الهيرو)</p>
+        <SmartUploader 
+          value={hero.heroVideoUrl || ''} 
+          accept="video/*"
+          label="اسحب أو اضغط لرفع فيديو الهيرو"
+          onChange={(urls) => updateSectionData('hero', (c) => ({ ...c, heroVideoUrl: urls[0] || '' }))} 
+        />
+        <LabeledInput label="Hero Video URL (رابط فيديو الهيرو يدويًا)" value={hero.heroVideoUrl || ''} onChange={(e) => updateSectionData('hero', (c) => ({ ...c, heroVideoUrl: e.target.value }))} />
       </SectionAccordion>
 
       {/* ── Lifestyle Timeline ── */}
@@ -523,6 +559,40 @@ export function ProjectLandingEditor({ projectId }: { projectId: string }) {
           <LabeledInput label="Success Message" value={leadForm.successMessage} onChange={(e) => updateSectionData('lead_form', (c) => ({ ...c, successMessage: e.target.value }))} />
         </div>
         <LabeledTextarea rows={3} label="Privacy Note" value={leadForm.privacyNote} onChange={(e) => updateSectionData('lead_form', (c) => ({ ...c, privacyNote: e.target.value }))} />
+      </SectionAccordion>
+
+      {/* ── Download Brochure ── */}
+      <SectionAccordion id="s-brochure" title="تحميل البروشور — Download Brochure" badge="جديد">
+        <label className="mb-4 flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={currentSections.download_brochure?.is_enabled ?? true}
+            onChange={(e) => toggleSectionEnabled('download_brochure', e.target.checked)}
+            className="accent-gold"
+          />
+          <span className="text-sm text-white/60">تفعيل السيكشن (Show this section)</span>
+        </label>
+        {downloadBrochure && (
+          <>
+            <LabeledInput label="Section Title" value={downloadBrochure.title} onChange={(e) => updateSectionData('download_brochure', (c) => ({ ...c, title: e.target.value }))} />
+            <LabeledTextarea rows={3} label="Description" value={downloadBrochure.description} onChange={(e) => updateSectionData('download_brochure', (c) => ({ ...c, description: e.target.value }))} />
+            <LabeledInput label="CTA Button Label" value={downloadBrochure.ctaLabel} onChange={(e) => updateSectionData('download_brochure', (c) => ({ ...c, ctaLabel: e.target.value }))} />
+            
+            <div className="my-4 space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">ملف البروشور للمشروع (PDF File)</p>
+              <SmartUploader 
+                value={brochureUrl || ''} 
+                accept="application/pdf"
+                label="اسحب أو اضغط لرفع ملف البروشور (PDF)"
+                onChange={(urls) => setBrochureUrl(urls[0] || null)}
+              />
+            </div>
+          </>
+        )}
+        <div className="my-2 h-px bg-white/5" />
+        <p className="text-[11px] text-white/40 leading-relaxed">
+          * ملاحظة: يجب رفع ملف البروشور (PDF) لكي يظهر هذا القسم للمستخدمين في صفحة الهبوط.
+        </p>
       </SectionAccordion>
 
       {/* ── SEO ── */}

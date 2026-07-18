@@ -12,7 +12,7 @@ import { getWhatsAppUrl, siteConfig } from '@/lib/site-config';
 export function ContactPageContent() {
   const { copy, locale } = useLanguage();
   const isArabic = locale === 'ar';
-  const whatsappUrl = getWhatsAppUrl();
+  const whatsappUrl = `https://wa.me/${copy.contact.whatsapp}`;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,6 +26,7 @@ export function ContactPageContent() {
       name: String(formData.get('name') || ''),
       phone: String(formData.get('phone') || ''),
       source: 'contact_page',
+      whatsappNumber: copy.contact.whatsapp,
     });
   };
 
@@ -81,7 +82,7 @@ export function ContactPageContent() {
                     name="phone"
                     type="tel"
                     className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-white transition-colors placeholder:text-start focus:border-gold/50 focus:outline-none"
-                    placeholder={siteConfig.phoneDisplay}
+                    placeholder={copy.contact.phone}
                     dir="ltr"
                   />
                 </div>
@@ -93,7 +94,7 @@ export function ContactPageContent() {
                     name="email"
                     type="email"
                     className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-white transition-colors focus:border-gold/50 focus:outline-none"
-                    placeholder={siteConfig.email}
+                    placeholder={copy.contact.email}
                     dir="ltr"
                   />
                 </div>
@@ -130,9 +131,9 @@ export function ContactPageContent() {
 
               <div className="grid gap-8 sm:grid-cols-2">
                 {[
-                  { icon: MapPin, title: isArabic ? 'العنوان' : 'Address', value: siteConfig.localizedAddress[locale] },
-                  { icon: Phone, title: isArabic ? 'اتصل بنا' : 'Call center', value: siteConfig.phoneDisplay },
-                  { icon: Mail, title: isArabic ? 'البريد' : 'Email', value: siteConfig.email },
+                  { icon: MapPin, title: isArabic ? 'العنوان' : 'Address', value: copy.contact.address },
+                  { icon: Phone, title: isArabic ? 'اتصل بنا' : 'Call center', value: copy.contact.phone },
+                  { icon: Mail, title: isArabic ? 'البريد' : 'Email', value: copy.contact.email },
                   { icon: Clock, title: isArabic ? 'ساعات العمل' : 'Working hours', value: isArabic ? '9ص - 10م' : '9AM - 10PM' },
                 ].map((item, index) => (
                   <div key={index} className="glass-panel space-y-3 rounded-3xl border border-white/5 p-8">

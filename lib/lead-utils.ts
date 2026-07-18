@@ -52,11 +52,15 @@ export function buildLeadMessage({
   return lines.join('\n');
 }
 
-export function openLeadWhatsApp(input: LeadMessageInput) {
+export function openLeadWhatsApp(input: LeadMessageInput & { whatsappNumber?: string }) {
   if (typeof window === 'undefined') {
     return;
   }
 
-  const url = getWhatsAppUrl(buildLeadMessage(input));
+  const baseNumber = input.whatsappNumber || siteConfig.whatsappNumber;
+  const baseUrl = `https://wa.me/${baseNumber}`;
+  const message = buildLeadMessage(input);
+  const url = message ? `${baseUrl}?text=${encodeURIComponent(message)}` : baseUrl;
+
   window.open(url, '_blank', 'noopener,noreferrer');
 }

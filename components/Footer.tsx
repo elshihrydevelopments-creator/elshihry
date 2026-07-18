@@ -17,42 +17,38 @@ export function Footer() {
   const isArabic = locale === 'ar';
   const footerLinks = copy.footer.links.filter((item) => item.hash !== 'vision');
 
-  const socialLinks = getSocialLinks().map(({ href, platform }) => ({
-    href,
-    icon:
-      platform === 'facebook'
-        ? Facebook
-        : platform === 'instagram'
-          ? Instagram
-          : platform === 'linkedin'
-            ? Linkedin
-            : Globe,
-    label: platform[0].toUpperCase() + platform.slice(1),
+  const socialLinks = [
+    { platform: 'facebook', href: copy.contact.facebook, icon: Facebook },
+    { platform: 'instagram', href: copy.contact.instagram, icon: Instagram },
+    { platform: 'linkedin', href: copy.contact.linkedin, icon: Linkedin },
+  ].filter((item) => Boolean(item.href)).map((item) => ({
+    ...item,
+    label: item.platform[0].toUpperCase() + item.platform.slice(1),
   }));
 
   const contactInfo = [
     {
       icon: Phone,
-      text: siteConfig.phoneDisplay,
-      href: getPhoneHref(),
+      text: copy.contact.phone,
+      href: `tel:${copy.contact.phone.replace(/\s+/g, '')}`,
       isDirectional: true,
     },
     {
       icon: MessageCircle,
-      text: siteConfig.whatsappDisplay,
-      href: getWhatsAppUrl(),
+      text: copy.contact.whatsapp,
+      href: `https://wa.me/${copy.contact.whatsapp}`,
       isDirectional: true,
       external: true,
     },
     {
       icon: Mail,
-      text: siteConfig.email,
-      href: getMailtoHref(),
+      text: copy.contact.email,
+      href: `mailto:${copy.contact.email}`,
       isDirectional: true,
     },
     {
       icon: MapPin,
-      text: siteConfig.localizedAddress[locale],
+      text: copy.contact.address,
       isDirectional: false,
     },
   ];
@@ -131,7 +127,7 @@ export function Footer() {
                   {copy.footer.terms}
                 </Link>
               </li>
-              <li className="break-words leading-7 text-white/55">{siteConfig.localizedAddress[locale]}</li>
+              <li className="break-words leading-7 text-white/55">{copy.contact.address}</li>
             </ul>
           </div>
 

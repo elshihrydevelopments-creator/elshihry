@@ -11,6 +11,7 @@ export const PROJECT_LANDING_SECTION_KEYS = [
   'testimonials',
   'faq',
   'lead_form',
+  'download_brochure',
   'seo',
 ] as const;
 
@@ -33,6 +34,7 @@ export type LandingHeroSection = {
   secondaryCtaHref: string;
   heroImageUrl: string;
   heroImageAlt: string;
+  heroVideoUrl?: string;
   stats: Array<{ label: string; value: string }>;
 };
 
@@ -106,6 +108,12 @@ export type LandingSeoSection = {
   fbPixelId?: string;
 };
 
+export type LandingDownloadBrochureSection = {
+  title: string;
+  description: string;
+  ctaLabel: string;
+};
+
 export type ProjectLandingSectionDataMap = {
   benefits: LandingBenefitsSection;
   faq: LandingFaqSection;
@@ -116,6 +124,7 @@ export type ProjectLandingSectionDataMap = {
   masterpiece_details: LandingMasterpieceSection;
   overview: LandingOverviewSection;
   panoramic_aura: LandingPanoramicAuraSection;
+  download_brochure: LandingDownloadBrochureSection;
   seo: LandingSeoSection;
   testimonials: LandingTestimonialsSection;
 };
@@ -140,6 +149,7 @@ export type LocalizedLandingSections = Record<
 export type ProjectAggregate = {
   amenities: string[];
   area_name: string | null;
+  brochure_url?: string | null;
   canonical_slug: string | null;
   city: string | null;
   cover_url: string | null;
@@ -276,11 +286,13 @@ export type ProjectLandingEditorPayload = {
   sections: LocalizedLandingSections;
   status: ProjectLandingStatus;
   thumbnailUrl: string | null;
+  brochureUrl?: string | null;
 };
 
 export type AdminProjectPayload = {
   amenities: string[];
   area_name: string;
+  brochure_url?: string | null;
   city: string;
   cover_url: string;
   delivery_date: string;

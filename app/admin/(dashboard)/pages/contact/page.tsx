@@ -27,6 +27,12 @@ export default function ContactPageEditor() {
             description="عنوان الصفحة الرئيسي، وصف الخدمة، عنوان نموذج الطلب وعنوان قسم المكاتب"
             defaultOpen={true}
           />
+          <SectionEditor
+            sectionKey="contact"
+            label="بيانات التواصل المباشر — Direct Contact Details & Form"
+            description="بيانات الاتصال (العنوان، الهاتف، البريد الإلكتروني، روابط التواصل الاجتماعي والواتساب)"
+            defaultOpen={false}
+          />
         </div>
       </motion.div>
     </div>

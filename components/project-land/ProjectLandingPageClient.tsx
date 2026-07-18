@@ -16,6 +16,7 @@ import { ProjectLocationMap } from '@/components/project-land/ProjectLocationMap
 import { ProjectMasterpieceDetails } from '@/components/project-land/ProjectMasterpieceDetails';
 import { ProjectPanoramicAura } from '@/components/project-land/ProjectPanoramicAura';
 import { ProjectUnitGrid } from '@/components/project-land/ProjectUnitGrid';
+import { ProjectBrochureSection } from '@/components/project-land/ProjectBrochureSection';
 import { useLuxuryScrollEffects } from '@/components/project-land/useLuxuryScrollEffects';
 import { useLanguage } from '@/components/LanguageProvider';
 import { FacebookPixel } from '@/components/project-land/FacebookPixel';
@@ -64,6 +65,7 @@ export function ProjectLandingPageClient({
   const lifestyleTimeline = sections.lifestyle_timeline.data;
   const masterpieceDetails = sections.masterpiece_details.data;
   const panoramicAura = sections.panoramic_aura.data;
+  const downloadBrochure = sections.download_brochure?.data;
   const seo = sections.seo?.data;
   const fbPixelId = seo?.fbPixelId;
 
@@ -232,6 +234,15 @@ export function ProjectLandingPageClient({
         projectUnitTypes={landing.project.unit_types.filter(Boolean)}
         units={landing.units}
       />
+
+      {/* ── BROCHURE DOWNLOAD ── */}
+      {sections.download_brochure?.is_enabled && downloadBrochure && landing.project.brochure_url && (
+        <ProjectBrochureSection
+          brochureUrl={landing.project.brochure_url}
+          isArabic={isArabic}
+          section={downloadBrochure}
+        />
+      )}
 
       <AnimatePresence>
         {!isModalOpen && (

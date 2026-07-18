@@ -17,6 +17,7 @@ const LANDING_SECTION_ORDER: ProjectLandingSectionKey[] = [
   'testimonials',
   'faq',
   'lead_form',
+  'download_brochure',
   'seo',
 ] as const;
 
@@ -216,6 +217,7 @@ function buildDefaultSectionData(project: ProjectAggregate, locale: Locale): Pro
       headline: title,
       heroImageAlt: title,
       heroImageUrl: coverImage,
+      heroVideoUrl: '',
       primaryCtaHref: '#lead-form',
       primaryCtaLabel: locale === 'ar' ? 'اطلب الأسعار والتفاصيل' : 'Request Pricing & Details',
       secondaryCtaHref: `/${locale}/projects/${project.slug}`,
@@ -308,6 +310,11 @@ function buildDefaultSectionData(project: ProjectAggregate, locale: Locale): Pro
           ? 'تم استلام طلبك بنجاح وسيقوم فريقنا بالتواصل معك في أقرب وقت.'
           : 'Your request has been received successfully. Our team will contact you shortly.',
       title: locale === 'ar' ? 'ابدأ المحادثة مع فريق المبيعات' : 'Start The Conversation With Sales',
+    },
+    download_brochure: {
+      title: locale === 'ar' ? 'اكتشف المزيد في البروشور التفصيلي' : 'Discover More in Our Detailed Brochure',
+      description: locale === 'ar' ? 'حمل البروشور الآن للحصول على كافة التفاصيل، مخططات الوحدات، والمساحات بصيغة PDF عالية الجودة.' : 'Download our brochure now to get all details, unit layouts, and spaces in high-quality PDF format.',
+      ctaLabel: locale === 'ar' ? 'تحميل البروشور (PDF)' : 'Download Brochure (PDF)',
     },
     seo: {
       description: buildSeoDescription(project, locale, title, description),

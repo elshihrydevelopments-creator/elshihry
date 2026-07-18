@@ -18,6 +18,7 @@ import {
   UserRoundSearch,
   ChevronDown,
   X,
+  Star,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -136,6 +137,23 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               })}
             </div>
           ) : null}
+        </div>
+
+        <div className="pt-4">
+          <p className="px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-gold/60">المشروع الأهم</p>
+          <Link
+            href={'/admin/qomor-renders' as any}
+            onClick={handleNavigate}
+            className={cn(
+              'mt-1 flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition-all duration-200',
+              isActive('/admin/qomor-renders') 
+                ? 'bg-gold text-rich-black font-bold shadow-[0_0_15px_rgba(241,213,130,0.3)]' 
+                : 'bg-gold/10 text-gold hover:bg-gold/20'
+            )}
+          >
+            <Star className={cn("h-4 w-4", isActive('/admin/qomor-renders') ? 'fill-rich-black' : 'fill-gold')} />
+            <span>إدارة قمر ريندرز</span>
+          </Link>
         </div>
 
         <div className="pt-4">

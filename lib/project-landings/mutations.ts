@@ -132,6 +132,7 @@ export async function upsertAdminProject(payload: AdminProjectPayload) {
     location_ar: parsed.location_ar,
     location_en: parsed.location_en,
     payment_plan_summary: normalizeOptionalText(parsed.payment_plan_summary),
+    brochure_url: normalizeOptionalText(parsed.brochure_url),
     project_type: normalizeOptionalText(parsed.project_type),
     published: parsed.published,
     slug: parsed.slug,
@@ -236,6 +237,17 @@ export async function saveProjectLanding(payload: unknown) {
 
   if (updateError) {
     throw new Error(updateError.message);
+  }
+
+  if (parsed.brochureUrl !== undefined) {
+    const { error: projectUpdateError } = await supabase
+      .from('projects')
+      .update({ brochure_url: normalizeOptionalText(parsed.brochureUrl) })
+      .eq('id', parsed.projectId);
+
+    if (projectUpdateError) {
+      throw new Error(projectUpdateError.message);
+    }
   }
 
   const { error: sectionsError } = await supabase

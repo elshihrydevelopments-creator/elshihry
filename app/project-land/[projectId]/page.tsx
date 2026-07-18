@@ -14,5 +14,9 @@ export default async function ProjectLandAliasPage({ params }: PageProps) {
     notFound();
   }
 
+  if (landing.project.slug === 'qomor-renders') {
+    redirect('/ar/qomor-renders');
+  }
+
   redirect(`/ar/projects/${landing.project.slug}/land`);
 }

@@ -1,11 +1,4 @@
-import type { StaticImageData } from 'next/image';
-
-import aboutImage from '@/app/public/about-bg.webp';
-import heroImage from '@/app/public/hero-bg.webp';
-import projectOne from '@/app/public/project-1.webp';
-import projectTwo from '@/app/public/project-2.webp';
-import projectThree from '@/app/public/project-3.webp';
-import projectFour from '@/app/public/project-4.webp';
+// No static image imports needed - assets are served from the public/ folder directly as strings.
 
 export type Locale = 'ar' | 'en';
 export type SectionHash = 'about' | 'contact' | 'projects' | 'vision' | 'blog' | '';
@@ -126,6 +119,30 @@ export type SiteCopy = {
     rights: string;
     terms: string;
   };
+  contact: {
+    sectionLabel: string;
+    heading: string;
+    description: string;
+    formHeading: string;
+    formNote: string;
+    nameLabel: string;
+    phoneLabel: string;
+    emailLabel: string;
+    interestLabel: string;
+    interestOptions: string[];
+    button: string;
+    detailsHeading: string;
+    addressLabel: string;
+    address: string;
+    mapLabel: string;
+    phone: string;
+    email: string;
+    socialHeading: string;
+    facebook: string;
+    instagram: string;
+    linkedin: string;
+    whatsapp: string;
+  };
   hero: {
     badge: string;
     scrollLabel: string;
@@ -183,15 +200,15 @@ export type SiteCopy = {
 };
 
 export const siteImages: {
-  about: StaticImageData;
-  hero: StaticImageData;
-  lifestyle: StaticImageData[];
-  projects: StaticImageData[];
+  about: string;
+  hero: string;
+  lifestyle: string[];
+  projects: string[];
 } = {
-  about: aboutImage,
-  hero: heroImage,
-  lifestyle: [heroImage, projectFour, projectThree, projectTwo],
-  projects: [projectOne, projectTwo, projectThree, projectFour],
+  about: '/about-bg.webp',
+  hero: '/hero-bg.webp',
+  lifestyle: ['/hero-bg.webp', '/project-4.webp', '/project-3.webp', '/project-2.webp'],
+  projects: ['/project-1.webp', '/project-2.webp', '/project-3.webp', '/project-4.webp'],
 };
 
 export const siteContent: Record<Locale, SiteCopy> = {
@@ -379,7 +396,7 @@ export const siteContent: Record<Locale, SiteCopy> = {
     lifestyle: {
       titleFirst: 'أسلوب',
       titleSecond: 'العمل',
-      images: siteImages.lifestyle.map((image) => image.src),
+      images: siteImages.lifestyle,
       items: ['واجهات ذهبية', 'تصميمات ملكية', 'إطلالات بانورامية', 'سكينة ساحلية'],
     },
     whyInvest: {
@@ -405,6 +422,30 @@ export const siteContent: Record<Locale, SiteCopy> = {
       privacy: 'سياسة الخصوصية',
       terms: 'الشروط والأحكام',
       rights: 'جميع الحقوق محفوظة.',
+    },
+    contact: {
+      sectionLabel: 'تواصل',
+      heading: 'ابدأ معنا المحادثة المناسبة',
+      description: 'شاركنا اهتمامك وسيساعدك فريقنا في مقارنة المشروعات وخطط السداد ومواعيد التسليم المتوقعة.',
+      formHeading: 'اطلب مكالمة من فريقنا',
+      formNote: 'عادة نقوم بالرد خلال يوم عمل واحد.',
+      nameLabel: 'الاسم',
+      phoneLabel: 'رقم الهاتف',
+      emailLabel: 'البريد الإلكتروني',
+      interestLabel: 'نوع الاهتمام',
+      interestOptions: ['اختر نوع الاهتمام', 'شقة', 'فيلا', 'وحدة تجارية', 'فرصة استثمارية'],
+      button: 'إرسال الطلب',
+      detailsHeading: 'بيانات التواصل المباشر',
+      addressLabel: 'العنوان',
+      address: 'فيلا 472 - شمال الشويفات - أمام داون تاون - التجمع الخامس - القاهرة الجديدة 11835، مصر',
+      mapLabel: 'عرض على Google Maps',
+      phone: '010 20008256',
+      email: 'esgroup@gmail.com',
+      socialHeading: 'تابعنا',
+      facebook: 'https://www.facebook.com/ElshihryDevelopments',
+      instagram: 'https://www.instagram.com/elshihrydevelopments/',
+      linkedin: 'https://www.linkedin.com/company/elshihrydevelopments',
+      whatsapp: '201020008256',
     },
   },
   en: {
@@ -591,7 +632,7 @@ export const siteContent: Record<Locale, SiteCopy> = {
     lifestyle: {
       titleFirst: 'The',
       titleSecond: 'Lifestyle',
-      images: siteImages.lifestyle.map((image) => image.src),
+      images: siteImages.lifestyle,
       items: ['Golden Facades', 'Royal Interiors', 'Skyline Views', 'Coastal Serenity'],
     },
     whyInvest: {
@@ -617,6 +658,30 @@ export const siteContent: Record<Locale, SiteCopy> = {
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
       rights: 'All rights reserved.',
+    },
+    contact: {
+      sectionLabel: 'Contact',
+      heading: "Let's Start the Right Conversation",
+      description: 'Share your interest and our team will help you compare projects, payment options, and expected delivery timelines.',
+      formHeading: 'Request a Call Back',
+      formNote: 'We usually reply within one business day.',
+      nameLabel: 'Name',
+      phoneLabel: 'Phone',
+      emailLabel: 'Email',
+      interestLabel: 'Interest',
+      interestOptions: ['Select an interest', 'Apartment', 'Villa', 'Commercial Unit', 'Investment Opportunity'],
+      button: 'Send Inquiry',
+      detailsHeading: 'Direct Contact Details',
+      addressLabel: 'Address',
+      address: 'Villa 472, North El Choueifat, opposite Downtown, Fifth Settlement, New Cairo 11835, Egypt',
+      mapLabel: 'View on Google Maps',
+      phone: '010 20008256',
+      email: 'esgroup@gmail.com',
+      socialHeading: 'Follow Us',
+      facebook: 'https://www.facebook.com/ElshihryDevelopments',
+      instagram: 'https://www.instagram.com/elshihrydevelopments/',
+      linkedin: 'https://www.linkedin.com/company/elshihrydevelopments',
+      whatsapp: '201020008256',
     },
   },
 };

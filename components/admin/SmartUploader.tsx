@@ -19,6 +19,7 @@ interface SmartUploaderProps {
   label?: string;
   maxFiles?: number;
   className?: string;
+  accept?: string;
 }
 
 interface UploadStatus {
@@ -28,7 +29,18 @@ interface UploadStatus {
   status: 'uploading' | 'completed' | 'error';
   url?: string;
   preview?: string;
+  type: 'image' | 'video' | 'pdf';
 }
+
+const isVideoUrl = (url?: string) => {
+  if (!url) return false;
+  return url.includes('/video/upload/') || url.match(/\.(mp4|webm|mov|ogg|m4v)($|\?)/i);
+};
+
+const isPdfUrl = (url?: string) => {
+  if (!url) return false;
+  return url.includes('/raw/upload/') || url.match(/\.pdf($|\?)/i);
+};
 
 export function SmartUploader({ 
   value,
@@ -36,7 +48,8 @@ export function SmartUploader({
   multiple = false, 
   label = "اسحب أو اضغط للرفع",
   maxFiles = 10,
-  className = ""
+  className = "",
+  accept = "image/*,video/*,application/pdf"
 }: SmartUploaderProps) {
   const [uploads, setUploads] = useState<UploadStatus[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -53,13 +66,23 @@ export function SmartUploader({
   const startUpload = async (file: File) => {
     const id = Math.random().toString(36).substring(7);
     const preview = URL.createObjectURL(file);
+    let fileType: 'image' | 'video' | 'pdf' = 'image';
+    let resourceType = 'image';
+    if (file.type.startsWith('video/')) {
+      fileType = 'video';
+      resourceType = 'video';
+    } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+      fileType = 'pdf';
+      resourceType = 'raw';
+    }
     
     const newUpload: UploadStatus = {
       id,
       name: file.name,
       progress: 0,
       status: 'uploading',
-      preview
+      preview,
+      type: fileType
     };
 
     setUploads(prev => [...prev, newUpload]);
@@ -76,7 +99,7 @@ export function SmartUploader({
       formData.append('signature', signature);
       
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, true);
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/${resourceType}/upload`, true);
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
@@ -125,7 +148,7 @@ export function SmartUploader({
     const fileArray = Array.from(files);
     
     if (!multiple && fileArray.length > 1) {
-      toast('يرجى اختيار صورة واحدة فقط', 'error');
+      toast('يرجى اختيار ملف واحد فقط', 'error');
       startUpload(fileArray[0]);
       return;
     }
@@ -161,22 +184,44 @@ export function SmartUploader({
         onDragLeave={() => setIsDragging(false)}
         onDrop={e => { e.preventDefault(); setIsDragging(false); handleFiles(e.dataTransfer.files); }}
       >
-        <input type="file" hidden ref={fileInputRef} onChange={e => handleFiles(e.target.files)} accept="image/*" />
+        <input type="file" hidden ref={fileInputRef} onChange={e => handleFiles(e.target.files)} accept={accept} />
         
         {(hasImage || activeUpload) ? (
-          <div className="absolute inset-0">
-            <img 
-              src={activeUpload ? activeUpload.preview : currentUrls[0]} 
-              alt="Preview" 
-              className="w-full h-full object-cover" 
-            />
+          <div className="absolute inset-0 flex items-center justify-center">
+            {(activeUpload?.type === 'video' || (!activeUpload && isVideoUrl(currentUrls[0]))) ? (
+              <video 
+                src={activeUpload ? activeUpload.preview : currentUrls[0]} 
+                className="w-full h-full object-cover" 
+                autoPlay 
+                muted 
+                loop 
+                playsInline
+              />
+            ) : (activeUpload?.type === 'pdf' || (!activeUpload && isPdfUrl(currentUrls[0]))) ? (
+              <div className="flex flex-col items-center justify-center p-6 text-center text-white/60">
+                <div className="mb-2 rounded-xl bg-gold/10 p-3 text-gold">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-semibold truncate max-w-[200px]">
+                  {activeUpload ? activeUpload.name : (currentUrls[0].split('/').pop() || 'بروشور PDF')}
+                </span>
+              </div>
+            ) : (
+              <img 
+                src={activeUpload ? activeUpload.preview : currentUrls[0]} 
+                alt="Preview" 
+                className="w-full h-full object-cover" 
+              />
+            )}
             <div className="absolute inset-0 bg-rich-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
               {(!activeUpload || activeUpload.status === 'error') && (
                 <>
-                  <button type="button" onClick={triggerSelect} className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-gold hover:text-rich-black transition-colors" title="تغيير الصورة">
+                  <button type="button" onClick={triggerSelect} className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-gold hover:text-rich-black transition-colors" title="تغيير الملف">
                     <ImageIcon className="w-5 h-5" />
                   </button>
-                  <button type="button" onClick={() => hasImage ? removeUrl(currentUrls[0]) : removeUpload(activeUpload!.id)} className="w-12 h-12 rounded-xl bg-red-500/80 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500 transition-colors" title="حذف الصورة">
+                  <button type="button" onClick={() => hasImage ? removeUrl(currentUrls[0]) : removeUpload(activeUpload!.id)} className="w-12 h-12 rounded-xl bg-red-500/80 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500 transition-colors" title="حذف الملف">
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </>
@@ -205,7 +250,7 @@ export function SmartUploader({
                <CloudUpload className={`w-6 h-6 ${isDragging ? 'text-gold' : 'text-white/40 group-hover:text-gold'}`} />
              </div>
              <p className="text-sm font-bold text-white/70">{label}</p>
-             <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">JPG, PNG, WEBP</p>
+             <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">الصور، الفيديوهات، ملفات PDF</p>
           </div>
         )}
       </div>
@@ -214,14 +259,27 @@ export function SmartUploader({
 
   return (
     <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 ${className}`}>
-      <input type="file" hidden ref={fileInputRef} multiple onChange={e => handleFiles(e.target.files)} accept="image/*" />
+      <input type="file" hidden ref={fileInputRef} multiple onChange={e => handleFiles(e.target.files)} accept={accept} />
       
         {currentUrls.map((url, idx) => (
           <div 
             key={url + idx}
             className="relative aspect-square rounded-[1.2rem] overflow-hidden border border-white/5 group bg-white/5"
           >
-            <img src={url} alt="Gallery item" className="w-full h-full object-cover" loading="lazy" />
+            {isVideoUrl(url) ? (
+              <video src={url} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+            ) : isPdfUrl(url) ? (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 text-white/60 p-4 text-center">
+                <svg className="w-8 h-8 mb-1 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <span className="text-[10px] truncate max-w-full">
+                  {url.split('/').pop() || 'PDF'}
+                </span>
+              </div>
+            ) : (
+              <img src={url} alt="Gallery item" className="w-full h-full object-cover" loading="lazy" />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-rich-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <button 
               type="button"
@@ -238,7 +296,18 @@ export function SmartUploader({
             key={upload.id}
             className="relative aspect-square rounded-[1.2rem] overflow-hidden border border-white/10 bg-white/5"
           >
-            <img src={upload.preview} alt={upload.name} className="w-full h-full object-cover opacity-50 blur-sm" />
+            {upload.type === 'video' ? (
+              <video src={upload.preview} className="w-full h-full object-cover opacity-50 blur-sm" autoPlay muted loop playsInline />
+            ) : upload.type === 'pdf' ? (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 text-white/40 p-4 text-center blur-[1px]">
+                <svg className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <span className="text-[10px] truncate max-w-full">{upload.name}</span>
+              </div>
+            ) : (
+              <img src={upload.preview} alt={upload.name} className="w-full h-full object-cover opacity-50 blur-sm" />
+            )}
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-rich-black/40">
               {upload.status === 'uploading' ? (
                 <>

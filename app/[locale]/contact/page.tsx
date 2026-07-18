@@ -29,7 +29,7 @@ export default async function LocalizedContactPage({
   params: Promise<{ locale: 'ar' | 'en' }>;
 }) {
   const { locale } = await params;
-  const content = await getRouteContent(['contactPage', 'footer']);
+  const content = await getRouteContent(['contactPage', 'footer', 'contact']);
   const contact = content[locale]?.contactPage;
   const description = contact?.description || 'Contact El Shihry Developments.';
   const title = locale === 'ar' ? 'تواصل | الشحري للتطوير العقاري' : 'Contact | El Shihry Developments';

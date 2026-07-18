@@ -406,7 +406,7 @@ export function ProjectsManager() {
                 </section>
 
                 <section className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-5">
-                  <SectionTitle>الصور</SectionTitle>
+                  <SectionTitle>الميديا (الصور والملفات)</SectionTitle>
                   <div className="space-y-5">
                     <div>
                       <FieldLabel>صورة الغلاف</FieldLabel>
@@ -428,6 +428,15 @@ export function ProjectsManager() {
                             })),
                           })
                         }
+                      />
+                    </div>
+                    <div>
+                      <FieldLabel>البروشور (ملف PDF)</FieldLabel>
+                      <SmartUploader 
+                        value={editingProject.brochure_url || ''} 
+                        accept="application/pdf"
+                        label="اسحب أو اضغط لرفع ملف البروشور (PDF)"
+                        onChange={(urls) => setEditingProject({ ...editingProject, brochure_url: urls[0] || '' })} 
                       />
                     </div>
                   </div>
@@ -578,7 +587,7 @@ export function ProjectsManager() {
               <h3 className="text-xl font-bold text-white mb-2">تأكيد حذف المشروع</h3>
               
               <p className="text-sm text-white/60 leading-relaxed mb-6">
-                هل أنت متأكد من رغبتك في حذف المشروع <span className="font-bold text-white">"{editingProject?.title_ar}"</span>؟
+                هل أنت متأكد من رغبتك في حذف المشروع <span className="font-bold text-white">&quot;{editingProject?.title_ar}&quot;</span>؟
                 <br />
                 <span className="text-red-400 font-medium">تحذير:</span> سيتم حذف صفحة الهبوط وجميع الإحصائيات والمميزات وبيانات العملاء (Leads) المرتبطة بهذا المشروع بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.
               </p>

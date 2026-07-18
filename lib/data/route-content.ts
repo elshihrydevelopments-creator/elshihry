@@ -131,7 +131,7 @@ function mapBlogPosts(posts: BlogRow[] | null | undefined): Record<Locale, BlogP
 }
 
 export async function getRouteContent(sectionKeys: SiteSectionKey[]): Promise<PartialSiteContent> {
-  const uniqueKeys = Array.from(new Set(sectionKeys));
+  const uniqueKeys = Array.from(new Set([...sectionKeys, 'contact' as SiteSectionKey]));
   const fallback = getFallbackSections(uniqueKeys);
   const dbSectionKeys = uniqueKeys.map((sectionKey) => (sectionKey === 'projects' ? 'projects_meta' : sectionKey));
 

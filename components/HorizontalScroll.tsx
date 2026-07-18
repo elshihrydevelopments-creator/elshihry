@@ -1,10 +1,9 @@
 'use client';
 
-import { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 import { useLanguage } from '@/components/LanguageProvider';
 import { LocaleReveal } from '@/components/LocaleReveal';
@@ -12,72 +11,60 @@ import { ScrollRevealHeading } from '@/components/ScrollRevealHeading';
 import { siteImages } from '@/lib/site-content';
 import { cn } from '@/lib/utils';
 
-gsap.registerPlugin(ScrollTrigger);
-
 export function HorizontalScroll() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { copy, locale } = useLanguage();
   const itemCount = copy.lifestyle.items.length;
   const isArabic = locale === 'ar';
   const uploadedLifestyleImages = copy.lifestyle.images ?? [];
 
-  useGSAP(
-    () => {
-      const section = sectionRef.current;
-      const track = scrollRef.current;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [isHovered, setIsHovered] = useState(false);
 
-      if (!section || !track || itemCount < 2) {
-        return;
+  // Detect responsive screen size to adjust visible cards
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      let nextVisibleCount = 3;
+      if (w < 768) {
+        nextVisibleCount = 2; // Mobile: 2 cards
+      } else {
+        nextVisibleCount = 3; // Tablet & Desktop: 3 cards
       }
+      setVisibleCount(nextVisibleCount);
+      const nextMaxIndex = Math.max(0, itemCount - nextVisibleCount);
+      setCurrentIndex((prev) => Math.min(prev, nextMaxIndex));
+    };
 
-      const items = gsap.utils.toArray<HTMLElement>('.horizontal-item', section);
-      const getMaxOffset = () => Math.max(track.scrollWidth - section.clientWidth, 0);
-      const getSnapPoints = () => {
-        const maxOffset = getMaxOffset();
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [itemCount]);
 
-        if (maxOffset === 0) {
-          return [0];
-        }
+  const maxIndex = Math.max(0, itemCount - visibleCount);
 
-        return Array.from(
-          new Set(items.map((item) => Number((Math.min(item.offsetLeft, maxOffset) / maxOffset).toFixed(4))))
-        );
-      };
+  // Autoplay logic: slides left/right every 5 seconds
+  useEffect(() => {
+    if (maxIndex === 0 || isHovered) return;
 
-      if (getMaxOffset() === 0) {
-        return;
-      }
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 5000);
 
-      gsap.set(track, { x: 0 });
+    return () => clearInterval(interval);
+  }, [maxIndex, isHovered]);
 
-      gsap.to(track, {
-        x: () => -getMaxOffset(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          pin: true,
-          scrub: 1.5,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          snap:
-            items.length > 1
-              ? {
-                  snapTo: (progress: number) => gsap.utils.snap(getSnapPoints(), progress),
-                  duration: { min: 0.12, max: 0.3 },
-                  ease: 'power1.inOut',
-                }
-              : undefined,
-          end: () => `+=${getMaxOffset()}`,
-        },
-      });
-    },
-    { scope: sectionRef, dependencies: [itemCount, locale], revertOnUpdate: true }
-  );
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
 
   return (
-    <section ref={sectionRef} dir="ltr" className="motion-safe relative h-screen w-full overflow-hidden bg-rich-black">
+    <section dir="ltr" className="relative h-screen w-full overflow-hidden bg-rich-black py-20 flex flex-col justify-center">
+      {/* Dynamic Localized Header */}
       <div className={cn('absolute top-20 z-10', isArabic ? 'right-6 text-right md:right-12' : 'left-6 text-left md:left-12')}>
         <ScrollRevealHeading
           as="h2"
@@ -94,45 +81,90 @@ export function HorizontalScroll() {
         />
       </div>
 
-      <div ref={scrollRef} className="flex h-full w-max items-center">
-        {copy.lifestyle.items.map((item, index) => {
-          const imageSource =
-            uploadedLifestyleImages[index] ||
-            siteImages.lifestyle[index % siteImages.lifestyle.length];
-
-          return (
-            <div
-              key={`${locale}-${index}`}
-              className="horizontal-item flex h-full w-screen shrink-0 items-center justify-center p-6 md:w-[50vw] md:p-12"
+      {/* Slider Viewport Container */}
+      <div 
+        className="relative w-full overflow-hidden px-4 md:px-12 mt-16 group/slider"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Glassy Floating Nav Buttons */}
+        {itemCount > 0 && (
+          <>
+            <button
+              onClick={handlePrev}
+              disabled={maxIndex === 0}
+              className="absolute left-6 md:left-14 top-1/2 -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white transition-all duration-300 hover:border-gold/50 hover:bg-white/15 active:scale-95 shadow-lg disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Previous Slide"
             >
-              <div className="group relative h-[60vh] w-full overflow-hidden rounded-3xl">
-                <Image
-                  src={imageSource}
-                  alt={item}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-rich-black/40 transition-colors duration-500 group-hover:bg-rich-black/20" />
-                <LocaleReveal
-                  localeKey={`lifestyle-card-${locale}-${index}`}
-                  className={cn('absolute bottom-10', isArabic ? 'right-10 text-right' : 'left-10 text-left')}
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={maxIndex === 0}
+              className="absolute right-6 md:right-14 top-1/2 -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white transition-all duration-300 hover:border-gold/50 hover:bg-white/15 active:scale-95 shadow-lg disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Next Slide"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          </>
+        )}
+
+        {/* Animated Sliding Track */}
+        <div className="overflow-hidden">
+          <motion.div
+            animate={{ x: `-${currentIndex * (100 / visibleCount)}%` }}
+            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+            className="flex w-full"
+          >
+            {copy.lifestyle.items.map((item, index) => {
+              const imageSource =
+                uploadedLifestyleImages[index] ||
+                siteImages.lifestyle[index % siteImages.lifestyle.length];
+
+              return (
+                <div
+                  key={`${locale}-${index}`}
+                  className={cn(
+                    "shrink-0 px-2 sm:px-3 md:px-4",
+                    visibleCount === 2 ? "w-1/2" : visibleCount === 3 ? "w-1/3" : "w-1/4"
+                  )}
                 >
-                  <ScrollRevealHeading
-                    as="h3"
-                    localeKey={`lifestyle-card-title-${locale}-${index}`}
-                    start="top 92%"
-                    className={cn(
-                      'text-3xl font-bold text-white md:text-5xl',
-                      isArabic ? 'leading-[1.35]' : 'tracking-[0.18em] uppercase'
-                    )}
-                    lines={[<span key={`item-${index}`} dir={isArabic ? 'rtl' : 'ltr'} className="block">{item}</span>]}
-                  />
-                </LocaleReveal>
-              </div>
-            </div>
-          );
-        })}
+                  <div className="group relative h-[50vh] w-full overflow-hidden rounded-[2rem] border border-white/5 shadow-xl bg-rich-black-light">
+                    <Image
+                      src={imageSource}
+                      alt={item}
+                      fill
+                      priority={index <= 2}
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-rich-black via-rich-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-60" />
+                    
+                    <LocaleReveal
+                      localeKey={`lifestyle-card-${locale}-${index}`}
+                      className={cn('absolute bottom-6 z-10 w-full px-4', isArabic ? 'right-0 text-right' : 'left-0 text-left')}
+                    >
+                      <ScrollRevealHeading
+                        as="h3"
+                        localeKey={`lifestyle-card-title-${locale}-${index}`}
+                        start="top 95%"
+                        className={cn(
+                          'text-xl font-bold text-white md:text-2xl',
+                          isArabic ? 'leading-[1.35]' : 'tracking-wide uppercase'
+                        )}
+                        lines={[
+                          <span key={`item-${index}`} dir={isArabic ? 'rtl' : 'ltr'} className="block">
+                            {item}
+                          </span>
+                        ]}
+                      />
+                    </LocaleReveal>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

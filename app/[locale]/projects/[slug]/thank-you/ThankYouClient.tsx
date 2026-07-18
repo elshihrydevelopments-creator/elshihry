@@ -118,7 +118,7 @@ export function ThankYouClient({ locale, slug, projectTitle, clientName, clientP
             {/* CTAs */}
             <FadeUp delay={0.5} className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
               <Link
-                href={`/${locale}/projects/${slug}/land`}
+                href={slug === 'qomor-renders' ? `/${locale}/qomor-renders` : `/${locale}/projects/${slug}/land`}
                 className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full border border-gold/30 px-8 text-xs font-bold uppercase tracking-[0.22em] text-gold transition-all duration-500 hover:border-gold"
               >
                 <span className="absolute inset-0 -translate-x-full bg-gold transition-transform duration-500 ease-out group-hover:translate-x-0" />

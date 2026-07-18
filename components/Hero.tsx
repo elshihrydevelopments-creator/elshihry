@@ -39,7 +39,7 @@ export function Hero() {
   const posterUrl =
     copy.hero.posterUrl ||
     content[alternateLocale].hero.posterUrl ||
-    siteImages.hero.src;
+    siteImages.hero;
   const videoUrl =
     copy.hero.videoUrl ||
     content[alternateLocale].hero.videoUrl ||

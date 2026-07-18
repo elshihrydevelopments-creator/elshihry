@@ -8,12 +8,12 @@ const PAGE_CARDS = [
   {
     href: '/admin/pages/home',
     label: 'الصفحة الرئيسية',
-    desc: 'Hero · Marquee · Lifestyle · Why Invest · Philosophy',
+    desc: 'Hero · Lifestyle · Philosophy',
     icon: Home,
     color: 'text-gold',
     bg: 'bg-gold/10',
     border: 'border-gold/15',
-    count: 5,
+    count: 3,
   },
   {
     href: '/admin/pages/about',

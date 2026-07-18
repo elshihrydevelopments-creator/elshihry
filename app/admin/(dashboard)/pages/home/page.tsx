@@ -13,22 +13,10 @@ const sections = [
     defaultOpen: true,
   },
   {
-    key: 'marquee',
-    label: 'الشريط المتحرك — Marquee',
-    description: 'النصوص المتحركة الظاهرة أسفل قسم الهيرو',
-    icon: Megaphone,
-  },
-  {
     key: 'lifestyle',
     label: 'أسلوب الحياة — Lifestyle',
     description: 'عنوان القسم وعناصر القائمة المتحركة',
     icon: Sparkles,
-  },
-  {
-    key: 'whyInvest',
-    label: 'لماذا الاستثمار — Why Invest',
-    description: 'الأرقام والإحصاءات والنصوص الاستثمارية',
-    icon: TrendingUp,
   },
   {
     key: 'philosophy',

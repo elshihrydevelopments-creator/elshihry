@@ -218,21 +218,23 @@ function SectionIntro({
 
 export function FunctionalSections() {
   const { locale, copy: siteCopy, localizeHref } = useLanguage();
-  const copy = sectionCopy[locale];
+  const copy = {
+    ...sectionCopy[locale],
+    contact: siteCopy.contact,
+  };
   const isArabic = locale === 'ar';
-  const localizedAddress = siteConfig.localizedAddress[locale];
+  const localizedAddress = copy.contact.address;
   const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(localizedAddress)}`;
-  const phoneHref = getPhoneHref();
+  const phoneHref = `tel:${copy.contact.phone.replace(/\s+/g, '')}`;
   const blogItems = siteCopy.blog.items.slice(0, 3);
-  const socialLinks = getSocialLinks().map(({ href, platform }) => ({
-    href,
-    icon:
-      platform === 'facebook'
-        ? Facebook
-        : platform === 'instagram'
-          ? Instagram
-          : Linkedin,
-    label: platform[0].toUpperCase() + platform.slice(1),
+  
+  const socialLinks = [
+    { platform: 'facebook', href: copy.contact.facebook, icon: Facebook },
+    { platform: 'instagram', href: copy.contact.instagram, icon: Instagram },
+    { platform: 'linkedin', href: copy.contact.linkedin, icon: Linkedin },
+  ].filter(item => Boolean(item.href)).map(item => ({
+    ...item,
+    label: item.platform[0].toUpperCase() + item.platform.slice(1)
   }));
 
   const handleLeadSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -248,41 +250,13 @@ export function FunctionalSections() {
       name: String(formData.get('name') || ''),
       phone: String(formData.get('phone') || ''),
       source: 'home_contact',
+      whatsappNumber: copy.contact.whatsapp,
     });
   };
 
   return (
     <section className="motion-safe bg-rich-black px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-rich-black-light shadow-[0_8px_32px_0_rgba(241,213,130,0.02)]">
-        <section className="border-b border-white/10 px-6 py-14 sm:px-10 lg:px-14">
-          <SectionIntro
-            eyebrow={copy.partners.eyebrow}
-            title={copy.partners.heading}
-            description={copy.partners.description}
-            isArabic={isArabic}
-          />
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-            {copy.partners.logos.map((logo) => (
-              <div
-                key={logo}
-                className="group flex min-h-24 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-5 text-center shadow-md transition duration-300 hover:-translate-y-0.5 hover:border-gold/30 hover:bg-white/10"
-              >
-                <span className="grayscale transition duration-300 group-hover:grayscale-0">
-                  <span
-                    className={cn(
-                      'block text-[0.68rem] font-medium tracking-[0.45em] text-white/50',
-                      isArabic ? '' : 'uppercase'
-                    )}
-                  >
-                    {copy.partners.logoLabel}
-                  </span>
-                  <span className="mt-2 block text-base font-semibold tracking-[0.18em] text-white">{logo}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="border-b border-white/10 px-6 py-14 sm:px-10 lg:px-14">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
             <SectionIntro
@@ -410,7 +384,7 @@ export function FunctionalSections() {
                     type="tel"
                     name="phone"
                     className="h-12 w-full rounded-2xl border border-white/10 bg-rich-black-light px-4 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-gold/50 focus:bg-rich-black"
-                    placeholder={siteConfig.phoneDisplay}
+                    placeholder={copy.contact.phone}
                   />
                 </label>
                 <label className={cn('space-y-2 text-sm font-medium text-white/80 sm:col-span-2', isArabic ? 'text-right' : 'text-left')}>
@@ -419,7 +393,7 @@ export function FunctionalSections() {
                     type="email"
                     name="email"
                     className="h-12 w-full rounded-2xl border border-white/10 bg-rich-black-light px-4 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-gold/50 focus:bg-rich-black"
-                    placeholder={siteConfig.email}
+                    placeholder={copy.contact.email}
                   />
                 </label>
                 <label className={cn('space-y-2 text-sm font-medium text-white/80 sm:col-span-2', isArabic ? 'text-right' : 'text-left')}>
@@ -499,7 +473,7 @@ export function FunctionalSections() {
                         {copy.contact.phoneLabel}
                       </p>
                       <Link href={phoneHref as any} onClick={() => trackEvent('phone_click', { locale, placement: 'home_contact' })} className="text-sm leading-7 text-white/90">
-                        {siteConfig.phoneDisplay}
+                        {copy.contact.phone}
                       </Link>
                     </div>
                   </div>
@@ -519,8 +493,8 @@ export function FunctionalSections() {
                       >
                         {copy.contact.emailLabel}
                       </p>
-                      <Link href={getMailtoHref() as any} className="text-sm leading-7 text-white/90">
-                        {siteConfig.email}
+                      <Link href={`mailto:${copy.contact.email}` as any} className="text-sm leading-7 text-white/90">
+                        {copy.contact.email}
                       </Link>
                     </div>
                   </div>

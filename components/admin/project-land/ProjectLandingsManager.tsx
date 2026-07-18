@@ -103,7 +103,7 @@ export function ProjectLandingsManager() {
                   تعديل
                 </Link>
                 <a
-                  href={`/ar/projects/${item.project_slug}/land`}
+                  href={item.project_slug === 'qomor-renders' ? '/ar/qomor-renders' : `/ar/projects/${item.project_slug}/land`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white/70 transition hover:border-gold/30 hover:text-gold"

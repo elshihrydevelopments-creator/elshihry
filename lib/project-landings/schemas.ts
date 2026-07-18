@@ -13,6 +13,7 @@ export const landingHeroSectionSchema = z.object({
   headline: z.string().trim().min(1),
   heroImageAlt: z.string().trim().default(''),
   heroImageUrl: z.string().trim().default(''),
+  heroVideoUrl: z.string().trim().default(''),
   primaryCtaHref: z.string().trim().default('#lead-form'),
   primaryCtaLabel: z.string().trim().min(1),
   secondaryCtaHref: z.string().trim().default('/projects'),
@@ -138,6 +139,14 @@ export const landingPanoramicAuraSectionSchema = z.object({
   title: z.string().trim().min(1),
 });
 
+export type LandingPanoramicAuraSectionSchema = z.infer<typeof landingPanoramicAuraSectionSchema>;
+
+export const landingDownloadBrochureSectionSchema = z.object({
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  ctaLabel: z.string().trim().min(1),
+});
+
 export const landingSectionDataSchemaMap = {
   benefits: landingBenefitsSectionSchema,
   faq: landingFaqSectionSchema,
@@ -148,6 +157,7 @@ export const landingSectionDataSchemaMap = {
   masterpiece_details: landingMasterpieceSectionSchema,
   overview: landingOverviewSectionSchema,
   panoramic_aura: landingPanoramicAuraSectionSchema,
+  download_brochure: landingDownloadBrochureSectionSchema,
   seo: landingSeoSectionSchema,
   testimonials: landingTestimonialsSectionSchema,
 } as const;
@@ -168,6 +178,7 @@ export const projectLandingEditorPayloadSchema = z.object({
   }),
   status: projectLandingStatusSchema,
   thumbnailUrl: z.string().trim().nullable(),
+  brochureUrl: z.string().trim().nullable().optional(),
 });
 
 export const projectLeadInputSchema = z.object({
@@ -188,6 +199,7 @@ export const projectLeadInputSchema = z.object({
 export const adminProjectPayloadSchema = z.object({
   amenities: textArraySchema.default([]),
   area_name: z.string().trim().default(''),
+  brochure_url: z.string().trim().optional().nullable(),
   city: z.string().trim().default(''),
   cover_url: z.string().trim().default(''),
   delivery_date: z.string().trim().default(''),

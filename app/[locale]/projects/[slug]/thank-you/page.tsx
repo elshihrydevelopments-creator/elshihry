@@ -11,6 +11,9 @@ export default async function ThankYouPage(props: {
 
   // ── Guard: only accessible after form submission ──
   if (!searchParams.name) {
+    if (slug === 'qomor-renders') {
+      redirect(`/${locale}/qomor-renders`);
+    }
     redirect(`/${locale}/projects/${slug}/land`);
   }
 

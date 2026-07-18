@@ -22,6 +22,7 @@ type ProjectRow = {
   canonical_slug?: string | null;
   city?: string | null;
   cover_url?: string | null;
+  brochure_url?: string | null;
   created_at?: string | null;
   delivery_date?: string | null;
   description_ar: string;
@@ -157,6 +158,7 @@ export function normalizeProjectRow(row: ProjectRow): ProjectAggregate {
     og_image: row.og_image ?? null,
     og_title: row.og_title ?? null,
     payment_plan_summary: row.payment_plan_summary ?? null,
+    brochure_url: row.brochure_url ?? null,
     project_type: row.project_type ?? null,
     published: row.published ?? true,
     seo_title: row.seo_title ?? null,
