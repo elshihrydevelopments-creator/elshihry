@@ -139,29 +139,18 @@ export function AboutPageContent() {
 
       <section className="mx-auto mb-32 max-w-7xl px-6 md:px-12">
         <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: UserRound,
-              label: isArabic ? 'القيادة' : 'Leadership',
-              value: siteConfig.founderOrChairman,
-            },
-            {
-              icon: MapPin,
-              label: isArabic ? 'المقر' : 'Headquarters',
-              value: siteConfig.localizedAddress[locale],
-            },
-            {
-              icon: Building2,
-              label: isArabic ? 'الهوية' : 'Brand',
-              value: siteConfig.legalName,
-            },
-          ].map((item) => (
-            <div key={item.label} className="glass-panel rounded-[2rem] border border-white/10 p-8">
-              <item.icon className="h-6 w-6 text-gold" />
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.28em] text-white/35">{item.label}</p>
-              <p className="mt-3 text-lg text-white">{item.value}</p>
-            </div>
-          ))}
+          {(copy.about.cards || []).map((item, index) => {
+            const cardIcons = [UserRound, MapPin, Building2];
+            const Icon = cardIcons[index] || Building2;
+
+            return (
+              <div key={item.label || index} className="glass-panel rounded-[2rem] border border-white/10 p-8">
+                <Icon className="h-6 w-6 text-gold" />
+                <p className="mt-4 text-xs font-bold uppercase tracking-[0.28em] text-white/35">{item.label}</p>
+                <p className="mt-3 text-lg text-white">{item.value}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 

@@ -99,6 +99,7 @@ export type SiteCopy = {
     paragraphs: string[];
     titleLines: [string, string];
     milestones: Array<{ year: string; title: string; description: string }>;
+    cards: Array<{ label: string; value: string }>;
   };
   aboutLeadership: {
     imageUrl: string;
@@ -278,6 +279,11 @@ export const siteContent: Record<Locale, SiteCopy> = {
         { year: '2024', title: 'التوسع العالمي', description: 'بدء أولى مشاريعنا خارج الحدود مع الحفاظ على بصمتنا الفريدة.' },
       ],
       cta: 'قصتنا',
+      cards: [
+        { label: 'القيادة', value: 'Eng. Ahmed El Shihry' },
+        { label: 'المقر', value: 'فيلا 472 - شمال الشويفات - أمام داون تاون - التجمع الخامس - القاهرة الجديدة 11835، مصر' },
+        { label: 'الهوية', value: 'El Shihry Developments' }
+      ],
     },
     aboutLeadership: {
       imageUrl: '',
@@ -514,6 +520,11 @@ export const siteContent: Record<Locale, SiteCopy> = {
         { year: '2024', title: 'Global Expansion', description: 'Starting our first international projects while maintaining our unique footprint.' },
       ],
       cta: 'Our Story',
+      cards: [
+        { label: 'Leadership', value: 'Eng. Ahmed El Shihry' },
+        { label: 'Headquarters', value: 'Villa 472, North El Choueifat, opposite Downtown, Fifth Settlement, New Cairo 11835, Egypt' },
+        { label: 'Brand', value: 'El Shihry Developments' }
+      ],
     },
     aboutLeadership: {
       imageUrl: '',

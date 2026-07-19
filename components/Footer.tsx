@@ -136,12 +136,12 @@ export function Footer() {
               {copy.footer.contactTitle}
             </h3>
             <ul className="space-y-4 text-sm text-white/85 md:text-base">
-              {contactInfo.map((item) => {
+              {contactInfo.map((item, index) => {
                 const Icon = item.icon;
 
                 return (
                   <li
-                    key={item.text}
+                    key={index}
                     className={cn('flex items-start gap-3', isArabic ? 'flex-row-reverse text-right' : 'text-left')}
                   >
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-gold/25 bg-gold/10 text-gold shadow-[0_10px_30px_rgba(212,175,55,0.08)]">
